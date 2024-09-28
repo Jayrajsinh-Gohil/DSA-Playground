@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Complexity Comparison Tool</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --background-color: #ecf0f1;
+            --text-color: #34495e;
+            --border-color: #bdc3c7;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            /* background-color: #FFFAE5; */
+            background-color: rgb(4, 14, 44);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            width: 100px;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--secondary-color);
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e0e0e0;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            input[type="number"] {
+                width: 100%;
+            }
+
+            table {
+                font-size: 14px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Time Complexity Comparison Tool</h1>
+        <div class="controls">
+            <label for="arraySize">Array Size:</label>
+            <input type="number" id="arraySize" value="1000" min="100" max="100000">
+            <button id="runButton">Run Comparison</button>
+        </div>
+        <table id="results">
+            <thead>
+                <tr>
+                    <th>Algorithm</th>
+                    <th>Time Taken (ms)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Results will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function bubbleSort(arr) {
+            const n = arr.length;
+            for (let i = 0; i < n; i++) {
+                for (let j = 0; j < n - i - 1; j++) {
+                    if (arr[j] > arr[j + 1]) {
+                        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                    }
+                }
+            }
+        }
+
+        function selectionSort(arr) {
+            const n = arr.length;
+            for (let i = 0; i < n; i++) {
+                let minIdx = i;
+                for (let j = i + 1; j < n; j++) {
+                    if (arr[j] < arr[minIdx]) {
+                        minIdx = j;
+                    }
+                }
+                if (minIdx !== i) {
+                    [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+                }
+            }
+        }
+
+        function insertionSort(arr) {
+            const n = arr.length;
+            for (let i = 1; i < n; i++) {
+                let key = arr[i];
+                let j = i - 1;
+                while (j >= 0 && arr[j] > key) {
+                    arr[j + 1] = arr[j];
+                    j--;
+                }
+                arr[j + 1] = key;
+            }
+        }
+
+        function quickSort(arr) {
+            if (arr.length <= 1) return arr;
+            const pivot = arr[Math.floor(arr.length / 2)];
+            const left = arr.filter(x => x < pivot);
+            const middle = arr.filter(x => x === pivot);
+            const right = arr.filter(x => x > pivot);
+            return [...quickSort(left), ...middle, ...quickSort(right)];
+        }
+
+        function mergeSort(arr) {
+            if (arr.length <= 1) return arr;
+            const mid = Math.floor(arr.length / 2);
+            const left = mergeSort(arr.slice(0, mid));
+            const right = mergeSort(arr.slice(mid));
+            return merge(left, right);
+        }
+
+        function merge(left, right) {
+            let result = [];
+            let i = 0, j = 0;
+            while (i < left.length && j < right.length) {
+                if (left[i] <= right[j]) {
+                    result.push(left[i]);
+                    i++;
+                } else {
+                    result.push(right[j]);
+                    j++;
+                }
+            }
+            return result.concat(left.slice(i)).concat(right.slice(j));
+        }
+
+        function timeSortingAlgorithm(sortFunc, arr) {
+            const arrCopy = [...arr];
+            const start = performance.now();
+            sortFunc(arrCopy);
+            const end = performance.now();
+            return end - start;
+        }
+
+        function runComparison() {
+            const arraySize = parseInt(document.getElementById('arraySize').value);
+            const arr = Array.from({length: arraySize}, () => Math.floor(Math.random() * 1000));
+            
+            const algorithms = [
+                { name: 'Bubble Sort', func: bubbleSort },
+                { name: 'Selection Sort', func: selectionSort },
+                { name: 'Insertion Sort', func: insertionSort },
+                { name: 'Quick Sort', func: quickSort },
+                { name: 'Merge Sort', func: mergeSort }
+            ];
+
+            const resultsBody = document.querySelector('#results tbody');
+            resultsBody.innerHTML = '';
+
+            algorithms.forEach(algo => {
+                const timeTaken = timeSortingAlgorithm(algo.func, arr);
+                const row = resultsBody.insertRow();
+                const nameCell = row.insertCell(0);
+                const timeCell = row.insertCell(1);
+                nameCell.textContent = algo.name;
+                timeCell.textContent = timeTaken.toFixed(2);
+            });
+        }
+
+        document.getElementById('runButton').addEventListener('click', runComparison);
+    </script>
+</body>
+</html>
