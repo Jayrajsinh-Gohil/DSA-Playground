@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Selection Sort Visualization</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto' !important;
+        }
+
+        body {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #FFFAE5;
+        }
+        #bar-container {
+            display: flex;
+            align-items: flex-end;
+            height: 400px;
+            width: 100%;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .bar {
+            flex-grow: 1;
+            background-color: #007bff;
+            margin: 0 2px;
+            transition: all 0.3s ease;
+            position: relative;
+            border-radius: 5px 5px 0 0;
+            margin: 10px;
+        }
+
+        .bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .highlight {
+            background-color: #ff4757 !important;
+        }
+
+        .min-highlight {
+            background-color: #ffa502 !important;
+        }
+
+        .sorted {
+            background-color: #2ed573 !important;
+        }
+
+        .bar-container {
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            width: 300px;
+            padding: 5px;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-right: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }input[type="text"] {
+            width: 300px;
+            padding: 5px;
+            height: 22px;
+            border-radius: 5px;
+            border: 2px solid black;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-right: 10px;
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            /* border: none; */
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: black;
+            color: white;
+        }
+
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #explanation,
+        #status {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #metrics {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .metric {
+            text-align: center;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #speed-control {
+            margin-top: 20px;
+        }
+
+        .floating-number {
+            position: absolute;
+            font-size: 14px;
+            color: #333;
+            opacity: 0;
+            transition: all 0.5s ease;
+            font-weight: bold;
+        }
+
+        #algorithm-complexity {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #color-legend {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+
+        #array-access-count {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Advanced Selection Sort Visualization</h1>
+    <input type="text" id="inputValues" placeholder="Enter comma-separated values">
+    <button onclick="startSorting()">Start</button>
+    <button id="pauseResumeBtn" onclick="togglePauseResume()">Pause</button>
+    <button onclick="prevStep()">Previous Step</button>
+    <button onclick="nextStep()">Next Step</button>
+    <button onclick="randomizeArray()">Randomize Array</button>
+
+    <div id="bar-container"></div>
+
+    <div id="color-legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #007bff;"></div>
+            <span>Unsorted</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #ff4757;"></div>
+            <span>Comparing</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #ffa502;"></div>
+            <span>Current Minimum</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #2ed573;"></div>
+            <span>Sorted</span>
+        </div>
+    </div>
+
+    <div id="explanation"></div>
+    <div id="status" style="display: none;"></div>
+
+    <div id="metrics">
+        <div class="metric">
+            <h3>Comparisons</h3>
+            <p id="comparisons">0</p>
+        </div>
+        <div class="metric">
+            <h3>Swaps</h3>
+            <p id="swaps">0</p>
+        </div>
+        <div class="metric">
+            <h3>Array Accesses</h3>
+            <p id="arrayAccesses">0</p>
+        </div>
+    </div>
+
+    <div id="algorithm-complexity">
+        <h3>Selection Sort Complexity:</h3>
+        <p>Time Complexity: O(n²)</p>
+        <p>Space Complexity: O(1)</p>
+        <p id="currentComplexity"></p>
+    </div>
+
+    <div id="speed-control" style="display: none;">
+        <label for="speed">Animation Speed:</label>
+        <input type="range" id="speed" name="speed" min="100" max="2000" value="1000" step="100">
+        <span id="speed-value">1000ms</span>
+    </div>
+
+    <script>
+        let values = [];
+        let originalValues = [];
+        let bars = [];
+        let i = 0, j = 0, minIndex = 0, n = 0;
+        let interval;
+        let isPaused = false;
+        let manual = false;
+        let steps = [];
+        let isRunning = false;
+        let comparisons = 0;
+        let swaps = 0;
+        let arrayAccesses = 0;
+        let animationSpeed = 1000;
+
+        function generateBars(values) {
+            const container = document.getElementById('bar-container');
+            container.innerHTML = '';
+            const maxValue = Math.max(...values);
+            values.forEach(value => {
+                const bar = document.createElement('div');
+                bar.classList.add('bar');
+                const scaledHeight = (value / maxValue) * 300;
+                bar.style.height = `${scaledHeight}px`;
+                bar.setAttribute('data-value', value);
+                container.appendChild(bar);
+            });
+            bars = document.getElementsByClassName('bar');
+        }
+
+        function startSorting() {
+            const inputValues = document.getElementById('inputValues').value;
+            values = inputValues.split(',').map(Number);
+            originalValues = [...values];
+            n = values.length;
+            generateBars(values);
+            document.getElementById('explanation').innerText = "Selection sort has started. In each iteration, we find the minimum element from the unsorted part and place it at the beginning of the unsorted part.";
+            document.getElementById('status').innerText = "";
+            i = 0;
+            j = 1;
+            minIndex = 0;
+            manual = false;
+            isPaused = false;
+            isRunning = true;
+            steps = [];
+            comparisons = 0;
+            swaps = 0;
+            arrayAccesses = 0;
+            updateMetrics();
+            document.getElementById('pauseResumeBtn').innerText = 'Pause';
+            document.getElementById('pauseResumeBtn').disabled = false;
+            updateComplexity();
+            runSorting();
+        }
+
+        function runSorting() {
+            if (!isPaused && isRunning) {
+                interval = setInterval(selectionSortStep, animationSpeed);
+            }
+        }
+
+        function togglePauseResume() {
+            const btn = document.getElementById('pauseResumeBtn');
+            if (isPaused) {
+                resumeSorting();
+                btn.innerText = "Pause";
+            } else {
+                pauseSorting();
+                btn.innerText = "Resume";
+            }
+        }
+
+        function pauseSorting() {
+            clearInterval(interval);
+            isPaused = true;
+            document.getElementById('status').innerText = "Sorting paused!";
+        }
+
+        function resumeSorting() {
+            isPaused = false;
+            document.getElementById('status').innerText = "Sorting resumed!";
+            runSorting();
+        }
+
+        function selectionSortStep() {
+            if (i < n - 1) {
+                if (j < n) {
+                    highlightBars(j, minIndex);
+                    comparisons++;
+                    arrayAccesses += 2;
+
+                    if (values[j] < values[minIndex]) {
+                        document.getElementById('explanation').innerText =
+                            `Comparing elements ${values[j]} and ${values[minIndex]}. ${values[j]} is smaller, so it becomes the new minimum.`;
+                        minIndex = j;
+                        highlightMinBar(minIndex);
+                        showFloatingNumber(j, "-");
+                    } else {
+                        document.getElementById('explanation').innerText =
+                            `Comparing elements ${values[j]} and ${values[minIndex]}. ${values[minIndex]} is still the minimum.`;
+                        showFloatingNumber(j, "+");
+                    }
+                    steps.push({ i, j, minIndex, swapped: false, comparisons, swaps, arrayAccesses });
+                    j++;
+                } else {
+                    if (minIndex !== i) {
+                        document.getElementById('explanation').innerText =
+                            `Swapping ${values[i]} with the minimum value ${values[minIndex]}.`;
+                        swap(i, minIndex);
+                        swaps++;
+                        arrayAccesses += 3; // Read 2 values, write 1 value
+                        steps.push({ i, j: n, minIndex, swapped: true, comparisons, swaps, arrayAccesses });
+                    } else {
+                        document.getElementById('explanation').innerText =
+                            `${values[i]} is already in its correct position.`;
+                        steps.push({ i, j: n, minIndex, swapped: false, comparisons, swaps, arrayAccesses });
+                    }
+                    markSorted(i);
+                    i++;
+                    j = i + 1;
+                    minIndex = i;
+                }
+                updateMetrics();
+                updateComplexity();
+            } else {
+                clearInterval(interval);
+                isRunning = false;
+                markSorted(n - 1);
+                document.getElementById('explanation').innerText = "Sorting complete! The array is now fully sorted.";
+                document.getElementById('status').innerText = "";
+                document.getElementById('pauseResumeBtn').disabled = true;
+            }
+        }
+
+        function nextStep() {
+            clearInterval(interval);
+            manual = true;
+            isPaused = true;
+            document.getElementById('pauseResumeBtn').innerText = "Resume";
+            selectionSortStep();
+        }
+
+
+        function prevStep() {
+            clearInterval(interval);
+            manual = true;
+            isPaused = true;
+            document.getElementById('pauseResumeBtn').innerText = "Resume";
+
+            if (steps.length > 0) {
+                const lastStep = steps.pop();
+                i = lastStep.i;
+                j = lastStep.j;
+                minIndex = lastStep.minIndex;
+                comparisons = lastStep.comparisons;
+                swaps = lastStep.swaps;
+                arrayAccesses = lastStep.arrayAccesses;
+
+                // Remove the sorted class from all bars
+                for (let k = 0; k < n; k++) {
+                    unmarkSorted(k);
+                }
+
+                if (lastStep.swapped) {
+                    swap(i, minIndex);
+                    document.getElementById('explanation').innerText =
+                        `Reversed: Swapped elements ${values[i]} and ${values[minIndex]} back.`;
+                } else {
+                    if (j === n) {
+                        j = i + 1;
+                        minIndex = i;
+                        document.getElementById('explanation').innerText =
+                            `Reversed: Moved back to the start of the iteration for index ${i}.`;
+                    } else {
+                        j--;
+                        document.getElementById('explanation').innerText =
+                            `Reversed: Comparing elements ${values[j]} and ${values[minIndex]}.`;
+                    }
+                }
+
+                // Mark already sorted elements again up to current i
+                for (let k = 0; k < i; k++) {
+                    markSorted(k);
+                }
+
+                highlightBars(j, minIndex);
+                highlightMinBar(minIndex);
+                updateMetrics();
+                updateComplexity();
+            } else {
+                values = [...originalValues];
+                generateBars(values);
+                i = 0;
+                j = 1;
+                minIndex = 0;
+                comparisons = 0;
+                swaps = 0;
+                arrayAccesses = 0;
+                updateMetrics();
+                updateComplexity();
+                document.getElementById('explanation').innerText = "Returned to the initial state.";
+            }
+        }
+
+        function highlightBars(index1, index2) {
+            resetHighlight();
+            if (index1 < n) {
+                bars[index1].classList.add('highlight');
+                bars[index1].classList.add('pulse');
+            }
+            if (index2 < n) {
+                bars[index2].classList.add('highlight');
+                bars[index2].classList.add('pulse');
+            }
+            setTimeout(() => {
+                if (index1 < n) bars[index1].classList.remove('pulse');
+                if (index2 < n) bars[index2].classList.remove('pulse');
+            }, 500);
+        }
+
+        function highlightMinBar(index) {
+            if (index < n) {
+                bars[index].classList.add('min-highlight');
+                bars[index].classList.add('pulse');
+                setTimeout(() => bars[index].classList.remove('pulse'), 500);
+            }
+        }
+
+        function resetHighlight() {
+            for (let bar of bars) {
+                bar.classList.remove('highlight', 'min-highlight');
+            }
+        }
+
+        function markSorted(index) {
+            if (index < n) {
+                bars[index].classList.add('sorted');
+                bars[index].classList.add('pulse');
+                setTimeout(() => bars[index].classList.remove('pulse'), 500);
+            }
+        }
+
+        function unmarkSorted(index) {
+            if (index < n) {
+                bars[index].classList.remove('sorted');
+            }
+        }
+
+        function swap(index1, index2) {
+            const temp = values[index1];
+            values[index1] = values[index2];
+            values[index2] = temp;
+
+            const tempHeight = bars[index1].style.height;
+            bars[index1].style.height = bars[index2].style.height;
+            bars[index2].style.height = tempHeight;
+
+            const tempValue = bars[index1].getAttribute('data-value');
+            bars[index1].setAttribute('data-value', bars[index2].getAttribute('data-value'));
+            bars[index2].setAttribute('data-value', tempValue);
+
+            bars[index1].classList.add('pulse');
+            bars[index2].classList.add('pulse');
+            setTimeout(() => {
+                bars[index1].classList.remove('pulse');
+                bars[index2].classList.remove('pulse');
+            }, 500);
+        }
+
+        function showFloatingNumber(index, sign) {
+            const floatingNumber = document.createElement('div');
+            floatingNumber.classList.add('floating-number');
+            floatingNumber.textContent = sign;
+            floatingNumber.style.left = `${bars[index].offsetLeft + bars[index].offsetWidth / 2}px`;
+            floatingNumber.style.top = `${bars[index].offsetTop - 20}px`;
+            document.body.appendChild(floatingNumber);
+
+            setTimeout(() => {
+                floatingNumber.style.opacity = '1';
+                floatingNumber.style.transform = 'translateY(-20px)';
+            }, 50);
+
+            setTimeout(() => {
+                floatingNumber.style.opacity = '0';
+                floatingNumber.style.transform = 'translateY(-40px)';
+            }, 450);
+
+            setTimeout(() => {
+                document.body.removeChild(floatingNumber);
+            }, 1000);
+        }
+
+        function updateMetrics() {
+            document.getElementById('comparisons').textContent = comparisons;
+            document.getElementById('swaps').textContent = swaps;
+            document.getElementById('arrayAccesses').textContent = arrayAccesses;
+        }
+
+        function updateComplexity() {
+            const complexity = `Current step: O(${n}) * O(${i + 1}) = O(${n * (i + 1)})`;
+            document.getElementById('currentComplexity').textContent = complexity;
+        }
+
+        function randomizeArray() {
+            const size = Math.floor(Math.random() * 11) + 5; // Random size between 5 and 15
+            values = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
+            document.getElementById('inputValues').value = values.join(',');
+            generateBars(values);
+            resetState();
+        }
+
+        function resetState() {
+            clearInterval(interval);
+            i = 0;
+            j = 1;
+            minIndex = 0;
+            comparisons = 0;
+            swaps = 0;
+            arrayAccesses = 0;
+            steps = [];
+            isRunning = false;
+            isPaused = false;
+            manual = false;
+            updateMetrics();
+            updateComplexity();
+            document.getElementById('explanation').innerText = "Array randomized. Click 'Start' to begin sorting.";
+            document.getElementById('status').innerText = "";
+            document.getElementById('pauseResumeBtn').innerText = "Pause";
+            document.getElementById('pauseResumeBtn').disabled = false;
+        }
+
+        // Speed control
+        const speedControl = document.getElementById('speed');
+        const speedValue = document.getElementById('speed-value');
+
+        speedControl.addEventListener('input', function () {
+            animationSpeed = this.value;
+            speedValue.textContent = `${animationSpeed}ms`;
+            if (isRunning && !isPaused) {
+                clearInterval(interval);
+                interval = setInterval(selectionSortStep, animationSpeed);
+            }
+        });
+
+        // Initialize with random array
+        randomizeArray();
+    </script>
+</body>
+
+</html>

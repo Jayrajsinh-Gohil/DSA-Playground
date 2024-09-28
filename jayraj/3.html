@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Merge Sort Visualization</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto' !important;
+        }
+
+        body {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #FFFAE5;
+        }
+
+        #bar-container {
+            display: flex;
+            align-items: flex-end;
+            height: 400px;
+            width: 100%;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .bar {
+            flex-grow: 1;
+            background-color: #007bff;
+            margin: 0 2px;
+            transition: all 0.3s ease;
+            position: relative;
+            border-radius: 5px 5px 0 0;
+            margin: 10px;
+        }
+
+        .bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .highlight {
+            background-color: #ff4757 !important;
+        }
+
+        .merge-highlight {
+            background-color: #ffa502 !important;
+        }
+
+        .sorted {
+            background-color: #2ed573 !important;
+        }
+
+        .bar-container {
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            width: 300px;
+            padding: 5px;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-right: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }input[type="text"] {
+            width: 300px;
+            padding: 5px;
+            height: 22px;
+            border-radius: 5px;
+            border: 2px solid black;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-right: 10px;
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            /* border: none; */
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: black;
+            color: white;
+        }
+
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #explanation,
+        #status {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #metrics {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .metric {
+            text-align: center;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #speed-control {
+            margin-top: 20px;
+        }
+
+        .floating-number {
+            position: absolute;
+            font-size: 14px;
+            color: #333;
+            opacity: 0;
+            transition: all 0.5s ease;
+            font-weight: bold;
+        }
+
+        #algorithm-complexity {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #color-legend {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+
+        #array-access-count {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Advanced Merge Sort Visualization</h1>
+    <input type="text" id="inputValues" placeholder="Enter comma-separated values">
+    <button onclick="startSorting()">Start</button>
+    <button id="pauseResumeBtn" onclick="togglePauseResume()">Pause</button>
+    <button onclick="prevStep()">Previous Step</button>
+    <button onclick="nextStep()">Next Step</button>
+    <button onclick="randomizeArray()">Randomize Array</button>
+
+    <div id="bar-container"></div>
+
+    <div id="color-legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #007bff;"></div>
+            <span>Unsorted</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #ff4757;"></div>
+            <span>Comparing</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #ffa502;"></div>
+            <span>Merging</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #2ed573;"></div>
+            <span>Sorted</span>
+        </div>
+    </div>
+
+    <div id="explanation"></div>
+    <div id="status" style="display: none;"></div>
+
+    <div id="metrics">
+        <div class="metric">
+            <h3>Comparisons</h3>
+            <p id="comparisons">0</p>
+        </div>
+        <div class="metric">
+            <h3>Merges</h3>
+            <p id="merges">0</p>
+        </div>
+        <div class="metric">
+            <h3>Array Accesses</h3>
+            <p id="arrayAccesses">0</p>
+        </div>
+    </div>
+
+    <div id="algorithm-complexity">
+        <h3>Merge Sort Complexity:</h3>
+        <p>Time Complexity: O(n log n)</p>
+        <p>Space Complexity: O(n)</p>
+        <p id="currentComplexity"></p>
+    </div>
+
+    <div id="speed-control" style="display: none;">
+        <label for="speed">Animation Speed:</label>
+        <input type="range" id="speed" name="speed" min="100" max="2000" value="1000" step="100">
+        <span id="speed-value">1000ms</span>
+    </div>
+
+    <script>
+        let values = [];
+        let originalValues = [];
+        let bars = [];
+        let n = 0;
+        let interval;
+        let isPaused = false;
+        let manual = false;
+        let steps = [];
+        let isRunning = false;
+        let comparisons = 0;
+        let merges = 0;
+        let arrayAccesses = 0;
+        let animationSpeed = 1000;
+        let currentStep = 0;
+
+        function generateBars(values) {
+            const container = document.getElementById('bar-container');
+            container.innerHTML = '';
+            const maxValue = Math.max(...values);
+            values.forEach(value => {
+                const bar = document.createElement('div');
+                bar.classList.add('bar');
+                const scaledHeight = (value / maxValue) * 300;
+                bar.style.height = `${scaledHeight}px`;
+                bar.setAttribute('data-value', value);
+                container.appendChild(bar);
+            });
+            bars = document.getElementsByClassName('bar');
+        }
+
+        function startSorting() {
+            const inputValues = document.getElementById('inputValues').value;
+            values = inputValues.split(',').map(Number);
+            originalValues = [...values];
+            n = values.length;
+            generateBars(values);
+            document.getElementById('explanation').innerText = "Merge sort has started. It will divide the array into smaller subarrays, sort them, and then merge them back together.";
+            document.getElementById('status').innerText = "";
+            manual = false;
+            isPaused = false;
+            isRunning = true;
+            steps = [];
+            comparisons = 0;
+            merges = 0;
+            arrayAccesses = 0;
+            currentStep = 0;
+            updateMetrics();
+            document.getElementById('pauseResumeBtn').innerText = 'Pause';
+            document.getElementById('pauseResumeBtn').disabled = false;
+            updateComplexity();
+            mergeSortWrapper(values, 0, n - 1);
+            runSorting();
+        }
+
+        function runSorting() {
+            if (!isPaused && isRunning) {
+                interval = setInterval(mergeSortStep, animationSpeed);
+            }
+        }
+
+        function togglePauseResume() {
+            const btn = document.getElementById('pauseResumeBtn');
+            if (isPaused) {
+                resumeSorting();
+                btn.innerText = "Pause";
+            } else {
+                pauseSorting();
+                btn.innerText = "Resume";
+            }
+        }
+
+        function pauseSorting() {
+            clearInterval(interval);
+            isPaused = true;
+            document.getElementById('status').innerText = "Sorting paused!";
+        }
+
+        function resumeSorting() {
+            isPaused = false;
+            document.getElementById('status').innerText = "Sorting resumed!";
+            runSorting();
+        }
+
+        function mergeSortWrapper(arr, left, right) {
+            if (left < right) {
+                const mid = Math.floor((left + right) / 2);
+                steps.push({ type: 'divide', left, mid, right });
+                mergeSortWrapper(arr, left, mid);
+                mergeSortWrapper(arr, mid + 1, right);
+                merge(arr, left, mid, right);
+            }
+        }
+
+        // function merge(arr, left, mid, right) {
+        //     const leftArr = arr.slice(left, mid + 1);
+        //     const rightArr = arr.slice(mid + 1, right + 1);
+        //     let i = 0, j = 0, k = left;
+        //     arrayAccesses += (right - left + 1);
+
+        //     while (i < leftArr.length && j < rightArr.length) {
+        //         comparisons++;
+        //         arrayAccesses += 2;
+        //         if (leftArr[i] <= rightArr[j]) {
+        //             arr[k] = leftArr[i];
+        //             steps.push({type: 'compare', indices: [left + i, mid + 1 + j], result: 'left'});
+        //             i++;
+        //         } else {
+        //             arr[k] = rightArr[j];
+        //             steps.push({type: 'compare', indices: [left + i, mid + 1 + j], result: 'right'});
+        //             j++;
+        //         }
+        //         k++;
+        //         arrayAccesses++;
+        //     }
+
+        //     while (i < leftArr.length) {
+        //         arr[k] = leftArr[i];
+        //         steps.push({type: 'append', index: k, value: leftArr[i]});
+        //         i++;
+        //         k++;
+        //         arrayAccesses += 2;
+        //     }
+
+        //     while (j < rightArr.length) {
+        //         arr[k] = rightArr[j];
+        //         steps.push({type: 'append', index: k, value: rightArr[j]});
+        //         j++;
+        //         k++;
+        //         arrayAccesses += 2;
+        //     }
+
+        //     merges++;
+        //     steps.push({type: 'merge', left, right});
+        // }
+
+        function merge(arr, left, mid, right) {
+            const leftArr = arr.slice(left, mid + 1);
+            const rightArr = arr.slice(mid + 1, right + 1);
+            let i = 0, j = 0, k = left;
+            arrayAccesses += (right - left + 1);
+
+            while (i < leftArr.length && j < rightArr.length) {
+                comparisons++;
+                arrayAccesses += 2;
+                if (leftArr[i] <= rightArr[j]) {
+                    arr[k] = leftArr[i];
+                    steps.push({ type: 'compare', indices: [left + i, mid + 1 + j], result: 'left' });
+                    i++;
+                } else {
+                    arr[k] = rightArr[j];
+                    steps.push({ type: 'compare', indices: [left + i, mid + 1 + j], result: 'right' });
+                    j++;
+                }
+                k++;
+                arrayAccesses++;
+            }
+
+            while (i < leftArr.length) {
+                arr[k] = leftArr[i];
+                steps.push({ type: 'append', index: k, value: leftArr[i] });
+                i++;
+                k++;
+                arrayAccesses += 2;
+            }
+
+            while (j < rightArr.length) {
+                arr[k] = rightArr[j];
+                steps.push({ type: 'append', index: k, value: rightArr[j] });
+                j++;
+                k++;
+                arrayAccesses += 2;
+            }
+
+            merges++;
+            steps.push({ type: 'merge', left, right, array: [...arr] });
+        }
+
+        // function mergeSortStep() {
+        //     if (currentStep < steps.length) {
+        //         const step = steps[currentStep];
+        //         switch (step.type) {
+        //             case 'divide':
+        //                 document.getElementById('explanation').innerText = `Dividing the array from index ${step.left} to ${step.right}`;
+        //                 highlightRange(step.left, step.right);
+        //                 break;
+        //             case 'compare':
+        //                 document.getElementById('explanation').innerText = `Comparing elements at indices ${step.indices[0]} and ${step.indices[1]}`;
+        //                 highlightBars(step.indices[0], step.indices[1]);
+        //                 if (step.result === 'left') {
+        //                     showFloatingNumber(step.indices[0], "≤");
+        //                 } else {
+        //                     showFloatingNumber(step.indices[1], "<");
+        //                 }
+        //                 break;
+        //             case 'append':
+        //                 document.getElementById('explanation').innerText = `Appending remaining element ${step.value} at index ${step.index}`;
+        //                 highlightBars(step.index);
+        //                 break;
+        //             case 'merge':
+        //                 document.getElementById('explanation').innerText = `Merging subarrays from index ${step.left} to ${step.right}`;
+        //                 highlightMergedRange(step.left, step.right);
+        //                 break;
+        //         }
+        //         updateMetrics();
+        //         updateComplexity();
+        //         currentStep++;
+        //     } else {
+        //         clearInterval(interval);
+        //         isRunning = false;
+        //         markAllSorted();
+        //         document.getElementById('explanation').innerText = "Sorting complete! The array is now fully sorted.";
+        //         document.getElementById('status').innerText = "";
+        //         document.getElementById('pauseResumeBtn').disabled = true;
+        //     }
+        // }
+
+
+        function mergeSortStep() {
+            if (currentStep < steps.length) {
+                const step = steps[currentStep];
+                switch (step.type) {
+                    case 'divide':
+                        document.getElementById('explanation').innerText = `Dividing the array from index ${step.left} to ${step.right}`;
+                        highlightRange(step.left, step.right);
+                        break;
+                    case 'compare':
+                        document.getElementById('explanation').innerText = `Comparing elements at indices ${step.indices[0]} and ${step.indices[1]}`;
+                        highlightBars(step.indices[0], step.indices[1]);
+                        if (step.result === 'left') {
+                            showFloatingNumber(step.indices[0], "≤");
+                        } else {
+                            showFloatingNumber(step.indices[1], "<");
+                        }
+                        break;
+                    case 'append':
+                        document.getElementById('explanation').innerText = `Appending remaining element ${step.value} at index ${step.index}`;
+                        highlightBars(step.index);
+                        break;
+                    case 'merge':
+                        document.getElementById('explanation').innerText = `Merging subarrays from index ${step.left} to ${step.right}`;
+                        highlightMergedRange(step.left, step.right);
+                        updateBars(step.array.slice(step.left, step.right + 1), step.left);
+                        break;
+                }
+                updateMetrics();
+                updateComplexity();
+                currentStep++;
+            } else {
+                clearInterval(interval);
+                isRunning = false;
+                markAllSorted();
+                document.getElementById('explanation').innerText = "Sorting complete! The array is now fully sorted.";
+                document.getElementById('status').innerText = "";
+                document.getElementById('pauseResumeBtn').disabled = true;
+            }
+        }
+
+        function updateBars(newValues, startIndex) {
+            const container = document.getElementById('bar-container');
+            const maxValue = Math.max(...values);
+
+            newValues.forEach((value, index) => {
+                const barIndex = startIndex + index;
+                const bar = bars[barIndex];
+                const scaledHeight = (value / maxValue) * 300;
+                bar.style.height = `${scaledHeight}px`;
+                bar.setAttribute('data-value', value);
+
+                // Animate the bar movement
+                bar.style.transform = `translateX(${(barIndex - (startIndex + index)) * (bar.offsetWidth + 4)}px)`;
+                setTimeout(() => {
+                    bar.style.transform = 'translateX(0)';
+                }, 50);
+            });
+
+            // Update the values array
+            for (let i = 0; i < newValues.length; i++) {
+                values[startIndex + i] = newValues[i];
+            }
+        }
+        function nextStep() {
+            clearInterval(interval);
+            manual = true;
+            isPaused = true;
+            document.getElementById('pauseResumeBtn').innerText = "Resume";
+            mergeSortStep();
+        }
+
+        function prevStep() {
+            clearInterval(interval);
+            manual = true;
+            isPaused = true;
+            document.getElementById('pauseResumeBtn').innerText = "Resume";
+
+            if (currentStep > 0) {
+                currentStep--;
+                const step = steps[currentStep];
+                // Implement logic to reverse the step
+                // This is a simplified version and may not accurately reverse all steps
+                resetHighlight();
+                document.getElementById('explanation').innerText = `Reversed: ${step.type} step`;
+                updateMetrics();
+                updateComplexity();
+            } else {
+                values = [...originalValues];
+                generateBars(values);
+                currentStep = 0;
+                comparisons = 0;
+                merges = 0;
+                arrayAccesses = 0;
+                updateMetrics();
+                updateComplexity();
+                document.getElementById('explanation').innerText = "Returned to the initial state.";
+            }
+        }
+
+        function highlightBars(index1, index2) {
+            resetHighlight();
+            if (index1 < n) {
+                bars[index1].classList.add('highlight');
+                bars[index1].classList.add('pulse');
+            }
+            if (index2 < n) {
+                bars[index2].classList.add('highlight');
+                bars[index2].classList.add('pulse');
+            }
+            setTimeout(() => {
+                if (index1 < n) bars[index1].classList.remove('pulse');
+                if (index2 < n) bars[index2].classList.remove('pulse');
+            }, 500);
+        }
+
+        function highlightRange(start, end) {
+            resetHighlight();
+            for (let i = start; i <= end; i++) {
+                bars[i].classList.add('highlight');
+            }
+        }
+
+        function highlightMergedRange(start, end) {
+            resetHighlight();
+            for (let i = start; i <= end; i++) {
+                bars[i].classList.add('merge-highlight');
+            }
+        }
+
+        function resetHighlight() {
+            for (let bar of bars) {
+                bar.classList.remove('highlight', 'merge-highlight');
+            }
+        }
+
+        function markAllSorted() {
+            for (let bar of bars) {
+                bar.classList.add('sorted');
+            }
+        }
+
+        function showFloatingNumber(index, sign) {
+            const floatingNumber = document.createElement('div');
+            floatingNumber.classList.add('floating-number');
+            floatingNumber.textContent = sign;
+            floatingNumber.style.left = `${bars[index].offsetLeft + bars[index].offsetWidth / 2}px`;
+            floatingNumber.style.top = `${bars[index].offsetTop - 20}px`;
+            document.body.appendChild(floatingNumber);
+
+            setTimeout(() => {
+                floatingNumber.style.opacity = '1';
+                floatingNumber.style.transform = 'translateY(-20px)';
+            }, 50);
+
+            setTimeout(() => {
+                floatingNumber.style.opacity = '0';
+                floatingNumber.style.transform = 'translateY(-40px)';
+            }, 450);
+
+            setTimeout(() => {
+                document.body.removeChild(floatingNumber);
+            }, 1000);
+        }
+
+        function updateMetrics() {
+            document.getElementById('comparisons').textContent = comparisons;
+            document.getElementById('merges').textContent = merges;
+            document.getElementById('arrayAccesses').textContent = arrayAccesses;
+        }
+
+        function updateComplexity() {
+            const complexity = `Current step: O(n log n), where n = ${n}`;
+            document.getElementById('currentComplexity').textContent = complexity;
+        }
+
+        function randomizeArray() {
+            const size = Math.floor(Math.random() * 11) + 5; // Random size between 5 and 15
+            values = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
+            document.getElementById('inputValues').value = values.join(',');
+            generateBars(values);
+            resetState();
+        }
+
+        function resetState() {
+            clearInterval(interval);
+            currentStep = 0;
+            comparisons = 0;
+            merges = 0;
+            arrayAccesses = 0;
+            steps = [];
+            isRunning = false;
+            isPaused = false;
+            manual = false;
+            updateMetrics();
+            updateComplexity();
+            document.getElementById('explanation').innerText = "Array randomized. Click 'Start' to begin sorting.";
+            document.getElementById('status').innerText = "";
+            document.getElementById('pauseResumeBtn').innerText = "Pause";
+            document.getElementById('pauseResumeBtn').disabled = false;
+        }
+
+        // Speed control
+        const speedControl = document.getElementById('speed');
+        const speedValue = document.getElementById('speed-value');
+
+        speedControl.addEventListener('input', function () {
+            animationSpeed = this.value;
+            speedValue.textContent = `${animationSpeed}ms`;
+            if (isRunning && !isPaused) {
+                clearInterval(interval);
+                interval = setInterval(mergeSortStep, animationSpeed);
+            }
+        });
+
+        // Initialize with random array
+        randomizeArray();
+    </script>
+</body>
+
+</html>

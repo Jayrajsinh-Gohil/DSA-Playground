@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Explanation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f0ffe7;
+            font-size: 14px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+        .window {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .window-bar {
+            background-color: #e0e0e0;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .window-button {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+        .close { background-color: #ff5f56; }
+        .minimize { background-color: #ffbd2e; }
+        .maximize { background-color: #27c93f; }
+        .code-container {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        pre, .output-content {
+            color: #d4d4d4;
+            padding: 10px;
+            margin: 0;
+            overflow-x: auto;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .code-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .code-container::-webkit-scrollbar-track {
+            background: #2e2e2e;
+        }
+        .code-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        .code-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+                font-size: 16px;
+            }
+            .container {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .card {
+                flex: 1 1 calc(50% - 15px);
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            .code-container {
+                max-height: 300px;
+            }
+            pre, .output-content {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>How it works:</h2>
+            <ol>
+                <li>Start with the least significant digit (rightmost digit) of each number.</li>
+                <li>Sort the array based on this digit using a stable sorting algorithm (like Counting Sort).</li>
+                <li>For each value, count it by increasing the counting array at the corresponding index.</li>
+                <li>Move to the next significant digit (second rightmost digit) and repeat the sorting process.</li>
+                <li>Continue the process for each digit until all digits have been processed, resulting in a fully sorted array.</li>
+            </ol>
+        </div>
+        <div class="card">
+            <h2>Code Example</h2>
+            <div class="window">
+                <div class="window-bar">
+                    <div class="window-button close"></div>
+                    <div class="window-button minimize"></div>
+                    <div class="window-button maximize"></div>
+                </div>
+                <div class="code-container">
+                    <pre><code>#include <iostream>
+using namespace std;
+
+// A utility function to get maximum
+// value in arr[]
+int getMax(int arr[], int n)
+{
+    int mx = arr[0];
+    for (int i = 1; i < n; i++)
+        if (arr[i] > mx)
+            mx = arr[i];
+    return mx;
+}
+
+// A function to do counting sort of arr[]
+// according to the digit
+// represented by exp.
+void countSort(int arr[], int n, int exp)
+{
+
+    // Output array
+    int output[n];
+    int i, count[10] = { 0 };
+
+    // Store count of occurrences
+    // in count[]
+    for (i = 0; i < n; i++)
+        count[(arr[i] / exp) % 10]++;
+
+    // Change count[i] so that count[i]
+    // now contains actual position
+    // of this digit in output[]
+    for (i = 1; i < 10; i++)
+        count[i] += count[i - 1];
+
+    // Build the output array
+    for (i = n - 1; i >= 0; i--) {
+        output[count[(arr[i] / exp) % 10] - 1] = arr[i];
+        count[(arr[i] / exp) % 10]--;
+    }
+
+    // Copy the output array to arr[],
+    // so that arr[] now contains sorted
+    // numbers according to current digit
+    for (i = 0; i < n; i++)
+        arr[i] = output[i];
+}
+
+// The main function to that sorts arr[]
+// of size n using Radix Sort
+void radixsort(int arr[], int n)
+{
+
+    // Find the maximum number to
+    // know number of digits
+    int m = getMax(arr, n);
+
+    // Do counting sort for every digit.
+    // Note that instead of passing digit
+    // number, exp is passed. exp is 10^i
+    // where i is current digit number
+    for (int exp = 1; m / exp > 0; exp *= 10)
+        countSort(arr, n, exp);
+}
+
+// A utility function to print an array
+void print(int arr[], int n)
+{
+    for (int i = 0; i < n; i++)
+        cout << arr[i] << " ";
+}
+
+// Driver Code
+int main()
+{
+    int arr[] = { 170, 45, 75, 90, 802, 24, 2, 66 };
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    // Function Call
+    radixsort(arr, n);
+    print(arr, n);
+    return 0;
+}
+                       
+</code></pre>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Output</h2>
+            <div class="window">
+                <div class="window-bar">
+                    <div class="window-button close"></div>
+                    <div class="window-button minimize"></div>
+                    <div class="window-button maximize"></div>
+                </div>
+                <div class="output-content">2 24 45 66 75 90 170 802</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

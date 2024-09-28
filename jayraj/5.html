@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Radix Sort Visualization</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto' !important;
+        }
+
+        body {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #FFFAE5;
+        }
+
+        ::-webkit-scrollbar {
+  display: none;
+}
+
+        #bar-container {
+            display: flex;
+            align-items: flex-end;
+            height: 400px;
+            width: 100%;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .bar {
+            flex-grow: 1;
+            background-color: #007bff;
+            margin: 0 2px;
+            transition: all 0.3s ease;
+            position: relative;
+            border-radius: 5px 5px 0 0;
+            margin: 10px;
+        }
+
+        .bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .highlight {
+            background-color: #ff4757 !important;
+        }
+
+        .sorted {
+            background-color: #2ed573 !important;
+        }
+
+        .bar-container {
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            width: 300px;
+            padding: 5px;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-right: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }input[type="text"] {
+            width: 300px;
+            padding: 5px;
+            height: 22px;
+            border-radius: 5px;
+            border: 2px solid black;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-right: 10px;
+            background-color: white;
+            color: black;
+            border: 2px solid black;
+            /* border: none; */
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: black;
+            color: white;
+        }
+
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #explanation,
+        #status {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #metrics {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .metric {
+            text-align: center;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #speed-control {
+            margin-top: 20px;
+        }
+
+        .floating-number {
+            position: absolute;
+            font-size: 14px;
+            color: #333;
+            opacity: 0;
+            transition: all 0.5s ease;
+            font-weight: bold;
+        }
+
+        #algorithm-complexity {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #color-legend {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+
+        #array-access-count {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 0.5s;
+        }
+
+        #buckets {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .bucket {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 5px;
+            min-width: 50px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Advanced Radix Sort Visualization</h1>
+    <input type="text" id="inputValues" placeholder="Enter comma-separated values">
+    <button onclick="startSorting()">Start</button>
+    <button id="pauseResumeBtn" onclick="togglePauseResume()">Pause</button>
+    <button onclick="prevStep()">Previous Step</button>
+    <button onclick="nextStep()">Next Step</button>
+    <button onclick="randomizeArray()">Randomize Array</button>
+
+    <div id="bar-container"></div>
+
+    <div id="buckets"></div>
+
+    <div id="color-legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #007bff;"></div>
+            <span>Unsorted</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #ff4757;"></div>
+            <span>Current Digit</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #2ed573;"></div>
+            <span>Sorted</span>
+        </div>
+    </div>
+
+    <div id="explanation"></div>
+    <div id="status" style="display: none;"></div>
+
+    <div id="metrics">
+        <div class="metric">
+            <h3>Array Accesses</h3>
+            <p id="arrayAccesses">0</p>
+        </div>
+        <div class="metric">
+            <h3>Current Digit</h3>
+            <p id="currentDigit">0</p>
+        </div>
+    </div>
+
+    <div id="algorithm-complexity">
+        <h3>Radix Sort Complexity:</h3>
+        <p>Time Complexity: O(d * (n + k))</p>
+        <p>Space Complexity: O(n + k)</p>
+        <p>Where d is the number of digits, n is the number of elements, and k is the range of input (10 for decimal
+            digits)</p>
+    </div>
+
+    <div id="speed-control" style="display: none;">
+        <label for="speed">Animation Speed:</label>
+        <input type="range" id="speed" name="speed" min="100" max="2000" value="1000" step="100">
+        <span id="speed-value">1000ms</span>
+    </div>
+
+    <script>
+        let values = [];
+        let originalValues = [];
+        let bars = [];
+        let n = 0;
+        let currentDigit = 0;
+        let maxDigits = 0;
+        let interval;
+        let isPaused = false;
+        let manual = false;
+        let steps = [];
+        let isRunning = false;
+        let arrayAccesses = 0;
+        let animationSpeed = 1000;
+
+        function generateBars(values) {
+            const container = document.getElementById('bar-container');
+            container.innerHTML = '';
+            const maxValue = Math.max(...values);
+            values.forEach(value => {
+                const bar = document.createElement('div');
+                bar.classList.add('bar');
+                const scaledHeight = (value / maxValue) * 300;
+                bar.style.height = `${scaledHeight}px`;
+                bar.setAttribute('data-value', value);
+                container.appendChild(bar);
+            });
+            bars = document.getElementsByClassName('bar');
+        }
+
+        function startSorting() {
+            const inputValues = document.getElementById('inputValues').value;
+            values = inputValues.split(',').map(Number);
+            originalValues = [...values];
+            n = values.length;
+            generateBars(values);
+            document.getElementById('explanation').innerText = "Radix sort has started. We'll sort the numbers digit by digit, starting from the least significant digit.";
+            document.getElementById('status').innerText = "";
+            currentDigit = 0;
+            maxDigits = Math.max(...values.toString().split('').map(Number)).toString().length;
+            manual = false;
+            isPaused = false;
+            isRunning = true;
+            steps = [];
+            arrayAccesses = 0;
+            updateMetrics();
+            document.getElementById('pauseResumeBtn').innerText = 'Pause';
+            document.getElementById('pauseResumeBtn').disabled = false;
+            runSorting();
+        }
+
+        function runSorting() {
+            if (!isPaused && isRunning) {
+                interval = setInterval(radixSortStep, animationSpeed);
+            }
+        }
+
+        function togglePauseResume() {
+            const btn = document.getElementById('pauseResumeBtn');
+            if (isPaused) {
+                resumeSorting();
+                btn.innerText = "Pause";
+            } else {
+                pauseSorting();
+                btn.innerText = "Resume";
+            }
+        }
+
+        function pauseSorting() {
+            clearInterval(interval);
+            isPaused = true;
+            document.getElementById('status').innerText = "Sorting paused!";
+        }
+
+        function resumeSorting() {
+            isPaused = false;
+            document.getElementById('status').innerText = "Sorting resumed!";
+            runSorting();
+        }
+
+        function radixSortStep() {
+            if (currentDigit < maxDigits) {
+                const buckets = Array.from({ length: 10 }, () => []);
+                for (let i = 0; i < n; i++) {
+                    const digit = getDigit(values[i], currentDigit);
+                    buckets[digit].push(values[i]);
+                    highlightBar(i);
+                    arrayAccesses++;
+                }
+                let index = 0;
+                for (let i = 0; i < 10; i++) {
+                    for (let j = 0; j < buckets[i].length; j++) {
+                        values[index] = buckets[i][j];
+                        updateBar(index, values[index]);
+                        index++;
+                        arrayAccesses++;
+                    }
+                }
+                currentDigit++;
+                updateBuckets(buckets);
+                updateMetrics();
+                document.getElementById('explanation').innerText = `Sorted by ${currentDigit}${getOrdinal(currentDigit)} digit from the right.`;
+                if (currentDigit === maxDigits) {
+                    finishSorting();
+                }
+            } else {
+                finishSorting();
+            }
+        }
+
+        function getDigit(num, place) {
+            return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+        }
+
+        function getOrdinal(n) {
+            const s = ["th", "st", "nd", "rd"];
+            const v = n % 100;
+            return (s[(v - 20) % 10] || s[v] || s[0]);
+        }
+
+        function updateBuckets(buckets) {
+            const bucketsContainer = document.getElementById('buckets');
+            bucketsContainer.innerHTML = '';
+            for (let i = 0; i < 10; i++) {
+                const bucket = document.createElement('div');
+                bucket.classList.add('bucket');
+                bucket.innerHTML = `<strong>${i}:</strong> ${buckets[i].join(', ')}`;
+                bucketsContainer.appendChild(bucket);
+            }
+        }
+
+        function highlightBar(index) {
+            bars[index].classList.add('highlight');
+            bars[index].classList.add('pulse');
+            setTimeout(() => {
+                bars[index].classList.remove('highlight', 'pulse');
+            }, animationSpeed / 2);
+        }
+
+        function updateBar(index, value) {
+            const maxValue = Math.max(...values);
+            const scaledHeight = (value / maxValue) * 300;
+            bars[index].style.height = `${scaledHeight}px`;
+            bars[index].setAttribute('data-value', value);
+        }
+
+        function finishSorting() {
+            clearInterval(interval);
+            isRunning = false;
+            for (let i = 0; i < n; i++) {
+                markSorted(i);
+            }
+            document.getElementById('explanation').innerText = "Sorting complete! The array is now fully sorted.";
+            document.getElementById('status').innerText = "";
+            document.getElementById('pauseResumeBtn').disabled = true;
+        }
+
+        function nextStep() {
+            clearInterval(interval);
+            manual = true;
+            isPaused = true;
+            document.getElementById('pauseResumeBtn').innerText = "Resume";
+            radixSortStep();
+        }
+
+        function prevStep() {
+            // Implementing 'previous step' for Radix Sort is complex and not included in this basic version
+            document.getElementById('explanation').innerText = "Previous step is not implemented for Radix Sort in this version.";
+        }
+
+        function markSorted(index) {
+            if (index < n) {
+                bars[index].classList.add('sorted');
+                bars[index].classList.add('pulse');
+                setTimeout(() => bars[index].classList.remove('pulse'), 500);
+            }
+        }
+
+        function updateMetrics() {
+            document.getElementById('arrayAccesses').textContent = arrayAccesses;
+            document.getElementById('currentDigit').textContent = currentDigit;
+        }
+
+        function randomizeArray() {
+            const size = Math.floor(Math.random() * 11) + 5; // Random size between 5 and 15
+            values = Array.from({ length: size }, () => Math.floor(Math.random() * 1000));
+            document.getElementById('inputValues').value = values.join(',');
+            generateBars(values);
+            resetState();
+        }
+
+        function resetState() {
+            clearInterval(interval);
+            currentDigit = 0;
+            arrayAccesses = 0;
+            steps = [];
+            isRunning = false;
+            isPaused = false;
+            manual = false;
+            updateMetrics();
+            document.getElementById('explanation').innerText = "Array randomized. Click 'Start' to begin sorting.";
+            document.getElementById('status').innerText = "";
+            document.getElementById('pauseResumeBtn').innerText = "Pause";
+            document.getElementById('pauseResumeBtn').disabled = false;
+            document.getElementById('buckets').innerHTML = '';
+        }
+
+        // Speed control
+        const speedControl = document.getElementById('speed');
+        const speedValue = document.getElementById('speed-value');
+
+        speedControl.addEventListener('input', function () {
+            animationSpeed = this.value;
+            speedValue.textContent = `${animationSpeed}ms`;
+            if (isRunning && !isPaused) {
+                clearInterval(interval);
+                interval = setInterval(radixSortStep, animationSpeed);
+            }
+        });
+
+        // Initial setup
+        randomizeArray();
+    </script>
+</body>
+
+</html>

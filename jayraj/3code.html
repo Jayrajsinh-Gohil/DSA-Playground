@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merge Sort Explanation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f0ffe7;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+        .window {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .window-bar {
+            background-color: #e0e0e0;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .window-button {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+        .close { background-color: #ff5f56; }
+        .minimize { background-color: #ffbd2e; }
+        .maximize { background-color: #27c93f; }
+        .code-container {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        pre, .output-content {
+            color: #d4d4d4;
+            padding: 10px;
+            margin: 0;
+            overflow-x: auto;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .code-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .code-container::-webkit-scrollbar-track {
+            background: #2e2e2e;
+        }
+        .code-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        .code-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+                font-size: 16px;
+            }
+            .container {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .card {
+                flex: 1 1 calc(50% - 15px);
+            }
+            .code-container {
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>How it works:</h2>
+            <ol>
+                <li>Divide the unsorted array into n subarrays, each containing one element (a list of one element is considered sorted).</li>
+                <li>Repeatedly merge subarrays to produce new sorted subarrays until there is only one subarray remaining. This will be the sorted array.</li>
+                <li>Merge the sub-arrays back together in sorted order by comparing elements from both sub-arrays.</li>
+            </ol>
+        </div>
+        <div class="card">
+            <h2>Code Example</h2>
+            <div class="window">
+                <div class="window-bar">
+                    <div class="window-button close"></div>
+                    <div class="window-button minimize"></div>
+                    <div class="window-button maximize"></div>
+                </div>
+                <div class="code-container">
+                    <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+void merge(vector&lt;int&gt;&amp; arr, int left, 
+                     int mid, int right)
+{
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    vector&lt;int&gt; L(n1), R(n2);
+
+    for (int i = 0; i &lt; n1; i++)
+        L[i] = arr[left + i];
+    for (int j = 0; j &lt; n2; j++)
+        R[j] = arr[mid + 1 + j];
+
+    int i = 0, j = 0;
+    int k = left;
+
+    while (i &lt; n1 && j &lt; n2) {
+        if (L[i] &lt;= R[j]) {
+            arr[k] = L[i];
+            i++;
+        }
+        else {
+            arr[k] = R[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i &lt; n1) {
+        arr[k] = L[i];
+        i++;
+        k++;
+    }
+
+    while (j &lt; n2) {
+        arr[k] = R[j];
+        j++;
+        k++;
+    }
+}
+
+void mergeSort(vector&lt;int&gt;&amp; arr, int left, int right)
+{
+    if (left >= right)
+        return;
+
+    int mid = left + (right - left) / 2;
+    mergeSort(arr, left, mid);
+    mergeSort(arr, mid + 1, right);
+    merge(arr, left, mid, right);
+}
+
+void printVector(vector&lt;int&gt;&amp; arr)
+{
+    for (int i = 0; i &lt; arr.size(); i++)
+        cout &lt;&lt; arr[i] &lt;&lt; " ";
+    cout &lt;&lt; endl;
+}
+
+int main()
+{
+    vector&lt;int&gt; arr = { 12, 11, 13, 5, 6, 7 };
+    int n = arr.size();
+
+    cout &lt;&lt; "Given vector is \n";
+    printVector(arr);
+
+    mergeSort(arr, 0, n - 1);
+
+    cout &lt;&lt; "\nSorted vector is \n";
+    printVector(arr);
+    return 0;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Output</h2>
+            <div class="window">
+                <div class="window-bar">
+                    <div class="window-button close"></div>
+                    <div class="window-button minimize"></div>
+                    <div class="window-button maximize"></div>
+                </div>
+                <div class="output-content">Given array is 12 11 13 5 6 7
+Sorted array is 5 6 7 11 12 13 </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

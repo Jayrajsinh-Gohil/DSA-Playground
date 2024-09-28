@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - DSA Playgrounds</title>
+  <link rel="icon" href="DSAplaygrounds.png" type="image/png">
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.3/components/abouts/about-1/assets/css/about-1.css" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <!-- GSAP Animation Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    body,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    a,
+    button,
+    input,
+    textarea {
+      font-family: 'Roboto', sans-serif;
+    }
+
+    /* General Styling */
+    .centero {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Background Colors */
+    .bg-light {
+      background-color: #fffae5 !important;
+    }
+
+    .bg-bevy {
+      background-color: #10162f !important;
+    }
+
+    /* Text Color and Styling */
+    .bg-bevy h1,
+    .bg-bevy h2,
+    .bg-bevy p,
+    .bg-bevy .display-4,
+    .bg-bevy .font-italic {
+      color: #fff !important;
+    }
+
+    .bg-bevy h1,
+    .bg-bevy h2 {
+      font-weight: bold;
+    }
+
+    .font-weight-light {
+      font-weight: 300 !important;
+    }
+
+    /* Team Card Styling */
+    .bg-white {
+      background-color: rgba(255, 255, 255, 0.85) !important;
+    }
+
+    .shadow-sm {
+      box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
+    }
+
+    /* Animation Styles */
+    .animate {
+      opacity: 0;
+    }
+
+    .animate-header {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+
+    .animate-img {
+      opacity: 0;
+      transform: translateX(-50px) scale(0.9);
+    }
+
+    .animate-card {
+      transform: rotateY(90deg);
+      opacity: 0;
+    }
+
+    /* General Styles */
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      /* overflow: hidden; */
+      /* Prevent scrolling during preloader */
+    }
+
+    /* Preloader Styles */
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #10162f;
+      /* Blue background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1000;
+      transition: transform 1s ease-in-out;
+      /* Smooth slide up */
+    }
+
+    #preloader h1 {
+      color: #ffffff;
+      font-size: 3rem;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      opacity: 0;
+      animation: fadeIn 1s forwards;
+      /* Fade-in effect */
+    }
+
+    /* Responsive Styling for Preloader h1 */
+    @media (max-width: 1200px) {
+      #preloader h1 {
+        font-size: 2.5rem;
+        /* Slightly smaller for medium screens */
+      }
+    }
+
+    @media (max-width: 768px) {
+      #preloader h1 {
+        font-size: 2rem;
+        /* Smaller for tablets */
+      }
+    }
+
+    @media (max-width: 480px) {
+      #preloader h1 {
+        font-size: 1.5rem;
+        /* Smallest size for mobile screens */
+      }
+    }
+
+
+    /* Animation to Fade in Text */
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Hide Preloader with Slide-up Animation */
+    .hide-preloader {
+      transform: translateY(-100%);
+      /* Slide up vertically */
+    }
+
+    /* Main Content (Initially Hidden) */
+    #main-content {
+      display: none;
+      /* Hidden until preloader is done */
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Preloader -->
+  <div id="preloader">
+    <h1>● About Us ●</h1>
+  </div>
+
+  <!-- JavaScript to Control Preloader -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Simulate loading time
+      setTimeout(() => {
+        // Slide up and hide preloader
+        document.getElementById('preloader').classList.add('hide-preloader');
+        // Show main content
+        document.getElementById('main-content').style.display = 'block';
+        // Enable scrolling
+        document.body.style.overflow = 'auto';
+      }, 1000); // Adjust time as needed
+    });
+  </script>
+
+  <header>
+    <div class="offers pt-1 pb-1">
+      <p>Transform your team with the latest tech skills | Learn on DSA PLAYGROUND</p>
+    </div>
+    <nav class="navbar navbar-expand-lg bg-body-light ps-5 pe-5">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bolder" href="index.html"><img src="DSAPlaygrounds-Logo-Horizontal 1.png" height="80"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" href="dsa.html" aria-disabled="true">Algorithms</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="exercise.html" aria-disabled="true">Exercises</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="resources.html" aria-disabled="true">Resources</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="about.html" aria-disabled="true">About Us</a>
+            </li>
+          </ul>
+          <div class="d-flex buttons">
+            <button class="log-btn me-2">Log In</button>
+            <button class="sign-btn">Sign Up</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="bg-bevy animate-header">
+    <div class="container py-5">
+      <div class="row h-100 align-items-center py-5">
+        <div class="col-lg-6">
+          <h1 class="display-4">About</h1>
+          <p class="lead text-muted mb-0">Welcome to DSA Playgrounds, your go-to platform for mastering Data Structures
+            and Algorithms (DSA) through interactive visualizations and hands-on coding exercises.</p>
+          <p class="lead text-muted">Explore, learn, and conquer coding challenges with us.</p>
+        </div>
+        <div class="col-lg-6 d-none d-lg-block animate-img"><img src="./DSAPlaygrounds-Logo-Horizontal.png"
+            alt="DSA Playgrounds Logo" class="img-fluid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-light py-5 animate">
+    <div class="container py-5">
+      <div class="row align-items-center mb-5">
+        <div class="col-lg-6 order-2 order-lg-1">
+          <h2 class="font-weight-bold">Interactive Learning</h2>
+          <p class="font-italic text-muted mb-4">Experience coding like never before with interactive DSA visualizations
+            and in-depth tutorials. Whether you’re a beginner or preparing for your dream job, we’ve got you covered!
+          </p>
+        </div>
+        <div class="col-lg-5 px-5 mx-auto order-1 order-lg-2 animate-img"><img src="./learning.svg"
+            alt="Interactive Learning" class="img-fluid mb-4 mb-lg-0"></div>
+      </div>
+      <div class="row align-items-center">
+        <div class="col-lg-5 px-5 mx-auto animate-img"><img src="./community.svg" alt="Community"
+            class="img-fluid mb-4 mb-lg-0"></div>
+        <div class="col-lg-6">
+          <h2 class="font-weight-bold">Our Community</h2>
+          <p class="font-italic text-muted mb-4">Connect with fellow learners, share knowledge, and grow together. Join
+            our community forums to discuss problems, find solutions, and improve your skills.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-bevy py-5">
+    <div class="container py-5">
+      <div class="row mb-4">
+        <div class="col-lg-5">
+          <h2 class="display-4 font-weight-bold">Our Team</h2>
+          <p class="font-italic text-muted">Meet the passionate team behind DSA Playgrounds.</p>
+        </div>
+      </div>
+
+      <div class="row text-center centero">
+        <!-- Team item-->
+        <div class="col-xl-3 col-sm-6 mb-5 animate-card">
+          <div class="bg-white rounded shadow-sm py-5 px-4"><img src="./DevTanna.jpg" alt="" width="100"
+              class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
+            <h5 class="mb-0">Dev Tanna</h5><span class="small text-uppercase text-muted">The Developer</span>
+          </div>
+        </div>
+        <!-- End-->
+
+        <!-- Team item-->
+        <div class="col-xl-3 col-sm-6 mb-5 animate-card">
+          <div class="bg-white rounded shadow-sm py-5 px-4"><img src="./Naishad2-1.jpg" alt="" width="100"
+              class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
+            <h5 class="mb-0">Naishad Gohel</h5><span class="small text-uppercase text-muted">The Designer</span>
+          </div>
+        </div>
+        <!-- End-->
+
+        <!-- Team item-->
+        <div class="col-xl-3 col-sm-6 mb-5 animate-card">
+          <div class="bg-white rounded shadow-sm py-5 px-4"><img src="./JAYRAJSINH.png" alt="" width="100"
+              class="img-fluid rounded-circle mb-3 img-thumbnail shadow-sm">
+            <h5 class="mb-0">Jayrajsinh Gohil</h5><span class="small text-uppercase text-muted">The Logic Builder</span>
+          </div>
+        </div>
+        <!-- End-->
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer-section">
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="widget company-intro-widget">
+              <a href="index.html" class="site-logo"><img src="DSAPlaygrounds-Logo-Horizontal 1.png" alt="logo" height="200"></a>
+
+            </div>
+          </div>
+          <!-- widget end -->
+
+          <!-- <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="widget course-links-widget">
+              <h5 class="widget-title">Popular Courses</h5>
+              <ul class="courses-link-list">
+                <li><a href="#"><i class="fas fa-long-arrow-alt-right"></i>Academic English</a></li>
+                <li><a href="#"><i class="fas fa-long-arrow-alt-right"></i>Web Technology</a></li>
+                <li><a href="#"><i class="fas fa-long-arrow-alt-right"></i>PC Systems</a></li>
+                <li><a href="#"><i class="fas fa-long-arrow-alt-right"></i>Ui Web Design</a></li>
+                <li><a href="#"><i class="fas fa-long-arrow-alt-right"></i>Web Development</a></li>
+                <li><a href="#"><i class="fas fa-long-arrow-alt-right"></i>Apps Development</a></li>
+              </ul>
+            </div>
+          </div> -->
+          <!-- widget end -->
+
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="widget latest-news-widget">
+              <h5 class="widget-title">Important Links</h5>
+              <ul class="courses-link-list">
+                <li><a href="index.html"><i class="fas fa-long-arrow-alt-right"></i>Home</a></li>
+                <li><a href="dsa.html"><i class="fas fa-long-arrow-alt-right"></i>Algorithms</a></li>
+                <li><a href="exercise.html"><i class="fas fa-long-arrow-alt-right"></i>Exercises</a></li>
+                <li><a href="resources.html"><i class="fas fa-long-arrow-alt-right"></i>Resources</a></li>
+                <li><a href="about.html"><i class="fas fa-long-arrow-alt-right"></i>About Us</a></li>
+              </ul>
+            </div>
+          </div><!-- widget end -->
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 col-sm-6 text-sm-left text-center">
+            <span class="copy-right-text" style="text-align: center;">2024 DSA Playgrounds. All rights reserved.</span>
+          </div>
+        </div>
+      </div>
+    </div><!-- footer-bottom end -->
+        
+  </footer>
+
+  <!-- JS Files -->
+  <script src="https://unpkg.com/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- GSAP Animations -->
+  <script>
+    window.onload = function () {
+      // Header Animation
+      gsap.to(".animate-header", {
+        duration: 1.5,
+        scale: 1,
+        opacity: 1,
+        ease: "power2.out"
+      });
+
+      // Basic Fade-in Animation
+      gsap.to(".animate", {
+        duration: 1.5,
+        opacity: 1,
+        y: 0,
+        ease: "power2.out",
+        stagger: 0.2,
+        delay: 0.5
+      });
+
+      // Image Slide-in Animation
+      gsap.to(".animate-img", {
+        duration: 1.5,
+        opacity: 1,
+        x: 0,
+        scale: 1,
+        ease: "power2.out",
+        stagger: 0.2,
+        delay: 1
+      });
+
+      // Team Card Flip-in Animation
+      gsap.to(".animate-card", {
+        duration: 1.5,
+        opacity: 1,
+        rotationY: 0,
+        ease: "power2.out",
+        stagger: 0.2,
+        delay: 1.5
+      });
+    }
+  </script>
+</body>
+
+</html>

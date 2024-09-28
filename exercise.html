@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive DSA & Interview Exercises</title>
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="stylesheet" href="./style.css">
+    <link rel="icon" href="DSAplaygrounds.png" type="image/png">
+
+    <style>
+        /* General Styling */
+        body,
+        html {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f8;
+        }
+
+        .section-padding {
+            padding: 60px 0;
+        }
+
+        .bg-light {
+            background-color: #fffae5 !important;
+        }
+
+        .bg-dark {
+            background-color: #10162f !important;
+        }
+
+        .text-light {
+            color: #fff;
+        }
+
+        .bg-bevy {
+            background-color: #10162f !important;
+        }
+
+        .bg-bevy h1,
+        .bg-bevy h2,
+        .bg-bevy p,
+        .bg-bevy .display-4,
+        .bg-bevy .font-italic {
+            color: #fff !important;
+        }
+
+        .faq-section .accordion-item {
+            border: none;
+            margin-bottom: 10px;
+        }
+
+        .faq-section .accordion-button {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .faq-section .accordion-button:not(.collapsed) {
+            color: #495057;
+            background: #fff0e5;
+        }
+
+        .accordion-button {
+            border: 2px solid #10162f;
+            background-color: #fff0e5 !important;
+        }
+
+        .exercise-card {
+            background-color: #fff;
+            border: 1px solid #10162f;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .exercise-card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .exercise-card h4 {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .exercise-card p {
+            margin-bottom: 10px;
+        }
+
+        .exercise-card .btn {
+            margin-top: 10px;
+            background-color: #3a10e5;
+            color: #fff;
+            border: none;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .exercise-card .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-outline-dark {
+            color: #10162f;
+            border: 1px solid #10162f;
+        }
+
+        .btn-outline-dark:hover {
+            background-color: #10162f;
+            color: #fff;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #10162f;
+        }
+
+        .difficulty-level {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+
+        .difficulty-level span {
+            padding: 2px 8px;
+            border-radius: 5px;
+        }
+
+        .difficulty-level .easy {
+            background-color: #e2f7e2;
+            color: #0b8400;
+        }
+
+        .difficulty-level .medium {
+            background-color: #fff5e5;
+            color: #ff9f43;
+        }
+
+        .difficulty-level .hard {
+            background-color: #ffe3e3;
+            color: #ff6b6b;
+        }
+
+        .show-answer-btn {
+            cursor: pointer;
+            color: #3a10e5;
+            font-weight: bold;
+        }
+
+        .answer {
+            display: none;
+        }
+
+        .feedback-form {
+            background-color: #fff0e5;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .feedback-form h5 {
+            margin-bottom: 15px;
+        }
+
+        .feedback-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+
+        /* General Styles */
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            /* overflow: hidden; */
+            /* Prevent scrolling during preloader */
+        }
+
+        /* Preloader Styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #10162f;
+            /* Blue background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+            transition: transform 1s ease-in-out;
+            /* Smooth slide up */
+        }
+
+        #preloader h1 {
+            color: #ffffff;
+            font-size: 3rem;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+            /* Fade-in effect */
+        }
+
+        /* Responsive Styling for Preloader h1 */
+        @media (max-width: 1200px) {
+            #preloader h1 {
+                font-size: 2.5rem;
+                /* Slightly smaller for medium screens */
+            }
+        }
+
+        @media (max-width: 768px) {
+            #preloader h1 {
+                font-size: 2rem;
+                /* Smaller for tablets */
+            }
+        }
+
+        @media (max-width: 480px) {
+            #preloader h1 {
+                font-size: 1.5rem;
+                /* Smallest size for mobile screens */
+            }
+        }
+
+
+        /* Animation to Fade in Text */
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Hide Preloader with Slide-up Animation */
+        .hide-preloader {
+            transform: translateY(-100%);
+            /* Slide up vertically */
+        }
+
+        /* Main Content (Initially Hidden) */
+        #main-content {
+            display: none;
+            /* Hidden until preloader is done */
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <h1>● Exercise ●</h1>
+    </div>
+
+    <!-- JavaScript to Control Preloader -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Simulate loading time
+            setTimeout(() => {
+                // Slide up and hide preloader
+                document.getElementById('preloader').classList.add('hide-preloader');
+                // Show main content
+                document.getElementById('main-content').style.display = 'block';
+                // Enable scrolling
+                document.body.style.overflow = 'auto';
+            }, 1000); // Adjust time as needed
+        });
+    </script>
+
+
+
+    <header>
+        <div class="offers pt-1 pb-1">
+            <p>Transform your team with the latest tech skills | Learn on DSA PLAYGROUND</p>
+        </div>
+        <nav class="navbar navbar-expand-lg bg-body-light ps-5 pe-5">
+            <div class="container-fluid">
+                <a class="navbar-brand fw-bolder" href="index.html"><img src="DSAPlaygrounds-Logo-Horizontal 1.png"
+                        height="80"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="dsa.html" aria-disabled="true">Algorithms</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="exercise.html" aria-disabled="true">Exercises</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="resources.html" aria-disabled="true">Resources</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="about.html" aria-disabled="true">About Us</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex buttons">
+                        <button class="log-btn me-2">Log In</button>
+                        <button class="sign-btn">Sign Up</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+
+    <!-- Main Header Section -->
+    <div class="bg-dark section-padding">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 text-light">Interactive DSA & Interview Exercises</h1>
+                    <p class="lead text-light mb-0">Engage with interactive exercises and quizzes to enhance your
+                        understanding of
+                        Data Structures and Algorithms. Prepare for interviews with real-world questions and solutions.
+                    </p>
+                </div>
+                <div class="col-lg-6 d-none d-lg-block">
+                    <img src="./exercise.svg" alt="Exercise Header Image" class="img-fluid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DSA Questions Section -->
+    <div class="bg-light section-padding">
+        <div class="container">
+            <h2 class="section-title">Data Structures & Algorithms Questions</h2>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="exercise-card">
+                        <h4>1. What is a Binary Search Tree?</h4>
+                        <div class="difficulty-level">
+                            Difficulty: <span class="easy">Easy</span>
+                        </div>
+                        <p class="show-answer-btn" onclick="toggleAnswer(this)">Show Answer</p>
+                        <div class="answer">
+                            <p>A Binary Search Tree (BST) is a tree data structure in which each node has at most two
+                                children,
+                                referred to as the left child and the right child. For each node, the value of all nodes
+                                in the left
+                                subtree is less than or equal to the node's value, and the value of all nodes in the
+                                right subtree is
+                                greater.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="exercise-card">
+                        <h4>2. What is a Linked List?</h4>
+                        <div class="difficulty-level">
+                            Difficulty: <span class="medium">Medium</span>
+                        </div>
+                        <p class="show-answer-btn" onclick="toggleAnswer(this)">Show Answer</p>
+                        <div class="answer">
+                            <p>A Linked List is a linear data structure where elements are not stored at contiguous
+                                memory locations.
+                                Each element, known as a node, contains data and a reference (or link) to the next node
+                                in the sequence.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="exercise-card">
+                        <h4>3. Explain the Quick Sort Algorithm.</h4>
+                        <div class="difficulty-level">
+                            Difficulty: <span class="hard">Hard</span>
+                        </div>
+                        <p class="show-answer-btn" onclick="toggleAnswer(this)">Show Answer</p>
+                        <div class="answer">
+                            <p>Quick Sort is a divide-and-conquer algorithm. It works by selecting a 'pivot' element and
+                                partitioning
+                                the array into two sub-arrays according to whether elements are less than or greater
+                                than the pivot. The
+                                sub-arrays are then sorted recursively.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Interview Questions Section -->
+    <div class="bg-light section-padding">
+        <div class="container">
+            <h2 class="section-title">Interactive Interview Questions</h2>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="exercise-card">
+                        <h4>1. What is polymorphism in OOP?</h4>
+                        <form>
+                            <div class="mb-3">
+                                <label for="polymorphism" class="form-label">Your Answer</label>
+                                <textarea id="polymorphism" class="form-control" rows="3"
+                                    placeholder="Write your answer here..."></textarea>
+                            </div>
+                            <button type="button" class="btn btn-outline-dark"
+                                onclick="showAnswer('polymorphism-answer')">Show
+                                Answer</button>
+                        </form>
+                        <div id="polymorphism-answer" class="answer mt-3">
+                            <p>Polymorphism is the ability of a function, object, or variable to take on multiple forms.
+                                In OOP, it
+                                refers to the ability to redefine methods in derived classes.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="exercise-card">
+                        <h4>2. What is a Singleton Pattern?</h4>
+                        <form>
+                            <div class="mb-3">
+                                <label for="singleton" class="form-label">Your Answer</label>
+                                <textarea id="singleton" class="form-control" rows="3"
+                                    placeholder="Write your answer here..."></textarea>
+                            </div>
+                            <button type="button" class="btn btn-outline-dark"
+                                onclick="showAnswer('singleton-answer')">Show
+                                Answer</button>
+                        </form>
+                        <div id="singleton-answer" class="answer mt-3">
+                            <p>The Singleton Pattern is a design pattern that restricts the instantiation of a class to
+                                a single
+                                instance and provides a global point of access to that instance.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="exercise-card">
+                        <h4>3. Difference between GET and POST?</h4>
+                        <form>
+                            <div class="mb-3">
+                                <label for="get-post" class="form-label">Your Answer</label>
+                                <textarea id="get-post" class="form-control" rows="3"
+                                    placeholder="Write your answer here..."></textarea>
+                            </div>
+                            <button type="button" class="btn btn-outline-dark"
+                                onclick="showAnswer('get-post-answer')">Show
+                                Answer</button>
+                        </form>
+                        <div id="get-post-answer" class="answer mt-3">
+                            <p>GET requests data from a specified resource, while POST submits data to be processed to a
+                                specified
+                                resource. GET appends data to the URL, making it visible in the URL, whereas POST hides
+                                it within the
+                                request body.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- JS Files -->
+    <script src="https://unpkg.com/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Show/Hide Answer Function
+        function toggleAnswer(element) {
+            const answer = element.nextElementSibling;
+            answer.style.display = answer.style.display === 'none' || answer.style.display === '' ? 'block' : 'none';
+        }
+
+        function showAnswer(id) {
+            document.getElementById(id).style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>

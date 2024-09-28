@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counting Sort Explanation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f0ffe7;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+        .window {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .window-bar {
+            background-color: #e0e0e0;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .window-button {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+        .close { background-color: #ff5f56; }
+        .minimize { background-color: #ffbd2e; }
+        .maximize { background-color: #27c93f; }
+        .code-container {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        pre, .output-content {
+            color: #d4d4d4;
+            padding: 10px;
+            margin: 0;
+            overflow-x: auto;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .code-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .code-container::-webkit-scrollbar-track {
+            background: #2e2e2e;
+        }
+        .code-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        .code-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+                font-size: 16px;
+            }
+            .container {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .card {
+                flex: 1 1 calc(50% - 15px);
+            }
+            .code-container {
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>How it works:</h2>
+            <ol>
+                <li>Create a new array for counting how many there are of the different values.</li>
+                <li>Go through the array that needs to be sorted.</li>
+                <li>For each value, count it by increasing the counting array at the corresponding index.</li>
+                <li>After counting the values, go through the counting array to create the sorted array.</li>
+                <li>For each count in the counting array, create the correct number of elements, with values that correspond to the counting array index.</li>
+            </ol>
+        </div>
+        <div class="card">
+            <h2>Code Example</h2>
+            <div class="window">
+                <div class="window-bar">
+                    <div class="window-button close"></div>
+                    <div class="window-button minimize"></div>
+                    <div class="window-button maximize"></div>
+                </div>
+                <div class="code-container">
+                    <pre><code>#include &lt;bits/stdc++.h&gt;
+using namespace std;
+
+vector&lt;int&gt; countSort(vector&lt;int&gt;&amp; inputArray)
+{
+    int N = inputArray.size();
+    int M = 0;
+
+    for (int i = 0; i &lt; N; i++)
+        M = max(M, inputArray[i]);
+
+    vector&lt;int&gt; countArray(M + 1, 0);
+
+    for (int i = 0; i &lt; N; i++)
+        countArray[inputArray[i]]++;
+
+    for (int i = 1; i &lt;= M; i++)
+        countArray[i] += countArray[i - 1];
+
+    vector&lt;int&gt; outputArray(N);
+
+    for (int i = N - 1; i >= 0; i--)
+    {
+        outputArray[countArray[inputArray[i]] - 1]
+            = inputArray[i];
+        countArray[inputArray[i]]--;
+    }
+
+    return outputArray;
+}
+
+int main()
+{
+    vector&lt;int&gt; inputArray = { 4, 3, 12, 1, 5, 5, 3, 9 };
+    vector&lt;int&gt; outputArray = countSort(inputArray);
+
+    for (int i = 0; i &lt; inputArray.size(); i++)
+        cout &lt;&lt; outputArray[i] &lt;&lt; " ";
+
+    return 0;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Output</h2>
+            <div class="window">
+                <div class="window-bar">
+                    <div class="window-button close"></div>
+                    <div class="window-button minimize"></div>
+                    <div class="window-button maximize"></div>
+                </div>
+                <div class="output-content">1 3 3 4 5 5 9 12</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

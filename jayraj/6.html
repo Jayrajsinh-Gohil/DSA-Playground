@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Linear Search Visualization</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto' !important;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        body {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #FFFAE5;
+        }
+
+        #bar-container {
+            display: flex;
+            align-items: flex-end;
+            height: 400px;
+            width: 100%;
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .bar {
+            flex-grow: 1;
+            background-color: #007bff;
+            margin: 0 2px;
+            transition: all 0.3s ease;
+            position: relative;
+            border-radius: 5px 5px 0 0;
+            margin: 10px;
+        }
+
+        .bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #fff;
+        }
+
+        .highlight {
+            background-color: #ff4757 !important;
+        }
+
+        .found {
+            background-color: #2ed573 !important;
+        }
+
+        .bar-container {
+            margin-top: 10px;
+        }
+
+        input[type="text"] {
+            width: 300px;
+            padding: 5px;
+        }
+
+        input[type="number"] {
+            width: 100px;
+            padding: 5px;
+        }
+
+        button {
+            padding: 8px 15px;
+            cursor: pointer;
+            margin-right: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #explanation,
+        #status {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #metrics {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .metric {
+            text-align: center;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #speed-control {
+            margin-top: 20px;
+        }
+
+        .floating-number {
+            position: absolute;
+            font-size: 14px;
+            color: #333;
+            opacity: 0;
+            transition: all 0.5s ease;
+            font-weight: bold;
+        }
+
+        #algorithm-complexity {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #color-legend {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            border-radius: 3px;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse {
+            animation: pulse 0.5s;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Advanced Linear Search Visualization</h1>
+    <input type="text" id="inputValues" placeholder="Enter comma-separated values">
+    <input type="number" id="searchValue" placeholder="Search value">
+    <button onclick="startSearch()">Start Search</button>
+    <button id="pauseResumeBtn" onclick="togglePauseResume()">Pause</button>
+    <button onclick="prevStep()">Previous Step</button>
+    <button onclick="nextStep()">Next Step</button>
+    <button onclick="randomizeArray()">Randomize Array</button>
+
+    <div id="bar-container"></div>
+
+    <div id="color-legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #007bff;"></div>
+            <span>Not Checked</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #ff4757;"></div>
+            <span>Checking</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background-color: #2ed573;"></div>
+            <span>Found</span>
+        </div>
+    </div>
+
+    <div id="explanation"></div>
+    <div id="status" style="display: none;"></div>
+
+    <div id="metrics">
+        <div class="metric">
+            <h3>Comparisons</h3>
+            <p id="comparisons">0</p>
+        </div>
+        <div class="metric">
+            <h3>Array Accesses</h3>
+            <p id="arrayAccesses">0</p>
+        </div>
+    </div>
+
+    <div id="algorithm-complexity">
+        <h3>Linear Search Complexity:</h3>
+        <p>Time Complexity: O(n)</p>
+        <p>Space Complexity: O(1)</p>
+        <p id="currentComplexity"></p>
+    </div>
+
+    <div id="speed-control" style="display: none;">
+        <label for="speed">Animation Speed:</label>
+        <input type="range" id="speed" name="speed" min="100" max="2000" value="1000" step="100">
+        <span id="speed-value">1000ms</span>
+    </div>
+
+    <script>
+        let values = [];
+        let originalValues = [];
+        let bars = [];
+        let currentIndex = 0;
+        let n = 0;
+        let interval;
+        let isPaused = false;
+        let manual = false;
+        let steps = [];
+        let isRunning = false;
+        let comparisons = 0;
+        let arrayAccesses = 0;
+        let animationSpeed = 1000;
+        let searchValue;
+
+        function generateBars(values) {
+            const container = document.getElementById('bar-container');
+            container.innerHTML = '';
+            const maxValue = Math.max(...values);
+            values.forEach(value => {
+                const bar = document.createElement('div');
+                bar.classList.add('bar');
+                const scaledHeight = (value / maxValue) * 300;
+                bar.style.height = `${scaledHeight}px`;
+                bar.setAttribute('data-value', value);
+                container.appendChild(bar);
+            });
+            bars = document.getElementsByClassName('bar');
+        }
+
+
+
+        function runSearch() {
+            if (!isPaused && isRunning) {
+                interval = setInterval(linearSearchStep, animationSpeed);
+            }
+        }
+
+        function togglePauseResume() {
+            const btn = document.getElementById('pauseResumeBtn');
+            if (isPaused) {
+                resumeSearch();
+                btn.innerText = "Pause";
+            } else {
+                pauseSearch();
+                btn.innerText = "Resume";
+            }
+        }
+
+        function pauseSearch() {
+            clearInterval(interval);
+            isPaused = true;
+            document.getElementById('status').innerText = "Search paused!";
+        }
+
+        function resumeSearch() {
+            isPaused = false;
+            document.getElementById('status').innerText = "Search resumed!";
+            runSearch();
+        }
+
+        function linearSearchStep() {
+            if (currentIndex < n) {
+                highlightBar(currentIndex);
+                comparisons++;
+                arrayAccesses++;
+
+                if (values[currentIndex] === searchValue) {
+                    document.getElementById('explanation').innerText =
+                        `Found ${searchValue} at index ${currentIndex}!`;
+                    markFound(currentIndex);
+                    clearInterval(interval);
+                    isRunning = false;
+                    document.getElementById('pauseResumeBtn').disabled = true;
+                } else {
+                    document.getElementById('explanation').innerText =
+                        `Checking index ${currentIndex}: ${values[currentIndex]} is not equal to ${searchValue}.`;
+                    steps.push({ index: currentIndex, comparisons, arrayAccesses });
+                    currentIndex++;
+                }
+                updateMetrics();
+                updateComplexity();
+            } else {
+                clearInterval(interval);
+                isRunning = false;
+                document.getElementById('explanation').innerText = `${searchValue} not found in the array.`;
+                document.getElementById('status').innerText = "";
+                document.getElementById('pauseResumeBtn').disabled = true;
+            }
+        }
+
+        function startSearch() {
+            const inputValues = document.getElementById('inputValues').value;
+            values = inputValues.split(',').map(Number);
+            originalValues = [...values];
+            n = values.length;
+            searchValue = parseInt(document.getElementById('searchValue').value);
+            generateBars(values);
+            document.getElementById('explanation').innerText = "Linear search has started. We will check each element one by one.";
+            document.getElementById('status').innerText = "";
+            currentIndex = 0;
+            manual = false;
+            isPaused = false;
+            isRunning = true;
+            steps = [];
+            comparisons = 0;
+            arrayAccesses = 0;
+            updateMetrics();
+            document.getElementById('pauseResumeBtn').innerText = 'Pause';
+            document.getElementById('pauseResumeBtn').disabled = false;
+            updateComplexity();
+            runSearch();
+        }
+
+        function nextStep() {
+            clearInterval(interval);
+            manual = true;
+            isPaused = true;
+            document.getElementById('pauseResumeBtn').innerText = "Resume";
+            linearSearchStep();
+        }
+
+        function prevStep() {
+            clearInterval(interval);
+            manual = true;
+            isPaused = true;
+            document.getElementById('pauseResumeBtn').innerText = "Resume";
+
+            if (steps.length > 0) {
+                const lastStep = steps.pop();
+                currentIndex = lastStep.index;
+                comparisons = lastStep.comparisons;
+                arrayAccesses = lastStep.arrayAccesses;
+
+                resetHighlight();
+                highlightBar(currentIndex);
+                document.getElementById('explanation').innerText =
+                    `Reversed: Checking index ${currentIndex}: ${values[currentIndex]} is not equal to ${searchValue}.`;
+
+                updateMetrics();
+                updateComplexity();
+            } else {
+                resetState();
+                document.getElementById('explanation').innerText = "Returned to the initial state.";
+            }
+        }
+
+        function highlightBar(index) {
+            resetHighlight();
+            if (index < n) {
+                bars[index].classList.add('highlight');
+                bars[index].classList.add('pulse');
+                setTimeout(() => bars[index].classList.remove('pulse'), 500);
+            }
+        }
+
+        function resetHighlight() {
+            for (let bar of bars) {
+                bar.classList.remove('highlight');
+                bar.classList.remove('found');
+            }
+        }
+
+        function markFound(index) {
+            if (index < n) {
+                bars[index].classList.add('found');
+                bars[index].classList.add('pulse');
+                setTimeout(() => bars[index].classList.remove('pulse'), 500);
+            }
+        }
+
+        function updateMetrics() {
+            document.getElementById('comparisons').textContent = comparisons;
+            document.getElementById('arrayAccesses').textContent = arrayAccesses;
+        }
+
+        function updateComplexity() {
+            const complexity = `Current step: O(${currentIndex + 1})`;
+            document.getElementById('currentComplexity').textContent = complexity;
+        }
+
+        function randomizeArray() {
+            const size = Math.floor(Math.random() * 11) + 5; // Random size between 5 and 15
+            values = Array.from({ length: size }, () => Math.floor(Math.random() * 100) + 1);
+            document.getElementById('inputValues').value = values.join(',');
+            document.getElementById('searchValue').value = values[Math.floor(Math.random() * size)];
+            generateBars(values);
+            resetState();
+        }
+
+        function resetState() {
+            clearInterval(interval);
+            currentIndex = 0;
+            comparisons = 0;
+            arrayAccesses = 0;
+            steps = [];
+            isRunning = false;
+            isPaused = false;
+            manual = false;
+            resetHighlight();
+            updateMetrics();
+            updateComplexity();
+            document.getElementById('explanation').innerText = "Array randomized. Enter a search value and click 'Start Search' to begin.";
+            document.getElementById('status').innerText = "";
+            document.getElementById('pauseResumeBtn').innerText = "Pause";
+            document.getElementById('pauseResumeBtn').disabled = false;
+        }
+
+        // Speed control
+        const speedControl = document.getElementById('speed');
+        const speedValue = document.getElementById('speed-value');
+
+        speedControl.addEventListener('input', function () {
+            animationSpeed = this.value;
+            speedValue.textContent = `${animationSpeed}ms`;
+            if (isRunning && !isPaused) {
+                clearInterval(interval);
+                interval = setInterval(linearSearchStep, animationSpeed);
+            }
+        });
+
+        // Initialize with random array
+        randomizeArray();
+    </script>
+</body>
+
+</html>

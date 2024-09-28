@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Sort Visualization</title>
+    <link rel="stylesheet" href="/jayraj/style.css">
+</head>
+<body>
+    <h1>Bubble Sort Visualization</h1>
+    <input type="text" id="inputValues" placeholder="Enter comma-separated values">
+    <button onclick="startSorting()">Start</button>
+    <button id="pauseResumeBtn" onclick="togglePauseResume()">Pause</button> 
+    <button onclick="prevStep()">Previous Step</button> 
+    <button onclick="nextStep()">Next Step</button> 
+
+    <div id="bar-container"></div>
+
+    <div id="explanation"></div>
+    <div id="status" style="display: none;"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

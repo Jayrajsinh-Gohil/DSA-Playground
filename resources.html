@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resources - DSA Playgrounds</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="DSAplaygrounds.png" type="image/png">
+
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body,
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    a,
+    button,
+    input,
+    textarea {
+      font-family: 'Roboto', sans-serif;
+    }
+
+    /* General Styling */
+    .centero {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* Background Colors */
+    .bg-light {
+      background-color: #fffae5 !important;
+    }
+
+    .bg-bevy {
+      background-color: #10162f !important;
+    }
+
+    .bg-white {
+      border: 2px solid #10162f;
+      background-color: #fff0e5 !important;
+    }
+
+    /* Text Color and Styling */
+    .bg-bevy h1,
+    .bg-bevy h2,
+    .bg-bevy p,
+    .bg-bevy .display-4,
+    .bg-bevy .font-italic {
+      color: #fff !important;
+    }
+
+    .bg-bevy h1,
+    .bg-bevy h2 {
+      font-weight: bold;
+    }
+
+    .font-weight-light {
+      font-weight: 300 !important;
+    }
+
+    /* Section Padding */
+    .section-padding {
+      padding: 60px 0;
+    }
+
+    /* FAQ Styles */
+    .faq-section .accordion-item {
+      border: none;
+      margin-bottom: 10px;
+    }
+
+    .faq-section .accordion-button {
+      background: #f8f9fa;
+      font-weight: bold;
+    }
+
+    .faq-section .accordion-button:not(.collapsed) {
+      color: #495057;
+      background: #fff0e5;
+    }
+
+    /* Resources Section */
+    .resource-card {
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+
+    .resource-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .resource-card img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .resource-card h5 {
+      margin: 15px 0;
+    }
+
+    .resource-card a {
+      display: block;
+      padding: 10px;
+      background-color: #3a10e5;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .resource-card a:hover {
+      background-color: #0056b3;
+    }
+
+    .accordion-button {
+      border: 2px solid #10162f;
+      background-color: #fff0e5 !important;
+    }
+
+    .accordion-body {
+      border: 2px solid #10162f;
+    }
+
+    .book-card {
+      display: flex;
+      align-items: center;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .book-card img {
+      width: 50%;
+      height: auto;
+      object-fit: cover;
+      border: 2px solid #f8f9fa;
+    }
+
+    .book-card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .book-title {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #f8f9fa;
+    }
+
+    .book-description {
+      margin-bottom: 15px;
+      color: #6c757d;
+    }
+
+    .book-rating {
+      display: flex;
+      align-items: center;
+      color: #ff9800;
+      font-weight: bold;
+    }
+
+
+    /* General Styles */
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      /* overflow: hidden; */
+      /* Prevent scrolling during preloader */
+    }
+
+    /* Preloader Styles */
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #10162f;
+      /* Blue background */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 1000;
+      transition: transform 1s ease-in-out;
+      /* Smooth slide up */
+    }
+
+    #preloader h1 {
+      color: #ffffff;
+      font-size: 3rem;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      opacity: 0;
+      animation: fadeIn 1s forwards;
+      /* Fade-in effect */
+    }
+
+    /* Responsive Styling for Preloader h1 */
+    @media (max-width: 1200px) {
+      #preloader h1 {
+        font-size: 2.5rem;
+        /* Slightly smaller for medium screens */
+      }
+    }
+
+    @media (max-width: 768px) {
+      #preloader h1 {
+        font-size: 2rem;
+        /* Smaller for tablets */
+      }
+    }
+
+    @media (max-width: 480px) {
+      #preloader h1 {
+        font-size: 1.5rem;
+        /* Smallest size for mobile screens */
+      }
+    }
+
+
+    /* Animation to Fade in Text */
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    /* Hide Preloader with Slide-up Animation */
+    .hide-preloader {
+      transform: translateY(-100%);
+      /* Slide up vertically */
+    }
+
+    /* Main Content (Initially Hidden) */
+    #main-content {
+      display: none;
+      /* Hidden until preloader is done */
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Preloader -->
+  <div id="preloader">
+    <h1>● Resource ●</h1>
+  </div>
+
+  <!-- JavaScript to Control Preloader -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Simulate loading time
+      setTimeout(() => {
+        // Slide up and hide preloader
+        document.getElementById('preloader').classList.add('hide-preloader');
+        // Show main content
+        document.getElementById('main-content').style.display = 'block';
+        // Enable scrolling
+        document.body.style.overflow = 'auto';
+      }, 1000); // Adjust time as needed
+    });
+  </script>
+
+  <header>
+    <div class="offers pt-1 pb-1">
+      <p>Transform your team with the latest tech skills | Learn on DSA PLAYGROUND</p>
+    </div>
+    <nav class="navbar navbar-expand-lg bg-body-light ps-5 pe-5">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bolder" href="index.html"><img src="DSAPlaygrounds-Logo-Horizontal 1.png" height="80"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" href="dsa.html" aria-disabled="true">Algorithms</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="exercise.html" aria-disabled="true">Exercises</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="resources.html" aria-disabled="true">Resources</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="about.html" aria-disabled="true">About Us</a>
+            </li>
+          </ul>
+          <div class="d-flex buttons">
+            <button class="log-btn me-2">Log In</button>
+            <button class="sign-btn">Sign Up</button>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Header Section -->
+  <div class="bg-bevy section-padding">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6">
+          <h1 class="display-4">Resources for DSA and Interviews</h1>
+          <p class="lead text-muted mb-0">Explore our curated resources to master Data Structures and Algorithms, ace
+            coding interviews, and get job-ready with our top recommendations!</p>
+        </div>
+        <div class="col-lg-6 d-none d-lg-block">
+          <img src="./resources.svg" alt="Resources Header Image" class="img-fluid">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="bg-light section-padding faq-section">
+    <div class="container">
+      <h2 class="font-weight-bold mb-4">Frequently Asked Questions</h2>
+      <div class="accordion" id="faqAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
+              aria-expanded="true" aria-controls="collapseOne">
+              What is the best way to learn Data Structures and Algorithms?
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+            data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Start with understanding the basics, solve problems consistently, and practice coding challenges on
+              platforms like LeetCode, HackerRank, and Codeforces. Visual learning through platforms like DSA
+              Playgrounds can be highly effective.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+              How to prepare for coding interviews?
+            </button>
+          </h2>
+          <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+            data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Focus on problem-solving skills, data structures, and algorithms. Practice mock interviews, solve previous
+              interview problems, and participate in competitive programming contests. Reviewing past interview
+              experiences can also be helpful.
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+              Which language should I use for DSA and interviews?
+            </button>
+          </h2>
+          <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree"
+            data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              It is recommended to use a language you are comfortable with. Python, Java, and C++ are popular choices
+              due to their robust libraries and widespread use in the industry.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interview Tips Section -->
+  <div class="bg-light section-padding">
+    <div class="container">
+      <h2 class="font-weight-bold mb-4">Interview Preparation Tips</h2>
+      <div class="row">
+        <div class="col-lg-4 mb-4">
+          <div class="bg-white p-4 rounded shadow-sm">
+            <h4>1. Master the Basics</h4>
+            <p class="text-muted">Before diving into complex problems, make sure your fundamentals are strong. Focus on
+              data structures like arrays, linked lists, stacks, and queues.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <div class="bg-white p-4 rounded shadow-sm">
+            <h4>2. Practice Regularly</h4>
+            <p class="text-muted">Consistency is key. Solve problems daily and track your progress. Set goals and try to
+              solve problems from various topics.</p><br>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <div class="bg-white p-4 rounded shadow-sm">
+            <h4>3. Simulate Real Interviews</h4>
+            <p class="text-muted">Take mock interviews to get a feel of the real experience. Use platforms like Pramp,
+              InterviewBit, or conduct peer interviews to gain confidence.</p><br>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Best Resources Section -->
+  <div class="bg-bevy section-padding">
+    <div class="container">
+      <h2 class="display-4 font-weight-bold text-center mb-4">Best Resources for DSA & Interviews</h2>
+      <div class="row centero">
+        <!-- Resource Item - YouTube Video -->
+        <div class="col-xl-3 col-md-4 col-sm-6 mb-5">
+          <div class="resource-card">
+            <img src="https://img.youtube.com/vi/6WdTxK_V9Qo/maxresdefault.jpg" alt="YouTube Video">
+            <h5>How to MASTER Data Structures & Algorithms FAST</h5>
+            <a href="https://www.youtube.com/watch?v=6WdTxK_V9Qo" target="_blank">Watch Now</a>
+          </div>
+        </div>
+        <!-- Resource Item - Blog Link -->
+        <div class="col-xl-3 col-md-4 col-sm-6 mb-5">
+          <div class="resource-card">
+            <img src="https://img.youtube.com/vi/N5N0zW8VdG8/maxresdefault.jpg" alt="Blog">
+            <h5>Top 10 DSA Patterns for Interviews</h5>
+            <a href="https://www.youtube.com/watch?v=N5N0zW8VdG8" target="_blank">Watch Now</a>
+          </div>
+        </div>
+        <!-- Resource Item - LeetCode Guide -->
+        <div class="col-xl-3 col-md-4 col-sm-6 mb-5">
+          <div class="resource-card">
+            <img src="https://img.youtube.com/vi/ajI9R-6saEk/maxresdefault.jpg" alt="LeetCode Guide">
+            <h5>Roadmap to Get Started with Competitive Programming</h5>
+            <a href="https://www.youtube.com/watch?v=6WdTxK_V9Qo" target="_blank">Watch Now</a>
+          </div>
+        </div>
+        <!-- Resource Item - Codeforces Guide -->
+        <div class="col-xl-3 col-md-4 col-sm-6 mb-5">
+          <div class="resource-card">
+            <img src="https://img.youtube.com/vi/3xC0F9bj9FU/maxresdefault.jpg" alt="Codeforces Guide">
+            <h5>Crack Your Coding Interviews with LeetCode</h5>
+            <a href="https://www.youtube.com/watch?v=N5N0zW8VdG8" target="_blank">Watch Now</a>
+          </div>
+        </div>
+      </div>
+
+
+
+    </div>
+
+  </div>
+  </div>
+
+  <footer class="footer-section">
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="widget company-intro-widget">
+              <a href="index.html" class="site-logo"><img src="DSAPlaygrounds-Logo-Horizontal 1.png" alt="logo" height="200"></a>
+
+            </div>
+          </div>
+          <!-- widget end -->
+
+          <!-- <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="widget course-links-widget">
+              <h5 class="widget-title">Popular Courses</h5>
+              <ul class="courses-link-list">
+                <li><a href="#"><i class="fas fa-long-arrow-alt-right"></i>Academic English</a></li>
+                <li><a href="#"><i class="fas fa-long-arrow-alt-right"></i>Web Technology</a></li>
+                <li><a href="#"><i class="fas fa-long-arrow-alt-right"></i>PC Systems</a></li>
+                <li><a href="#"><i class="fas fa-long-arrow-alt-right"></i>Ui Web Design</a></li>
+                <li><a href="#"><i class="fas fa-long-arrow-alt-right"></i>Web Development</a></li>
+                <li><a href="#"><i class="fas fa-long-arrow-alt-right"></i>Apps Development</a></li>
+              </ul>
+            </div>
+          </div> -->
+          <!-- widget end -->
+
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="widget latest-news-widget">
+              <h5 class="widget-title">Important Links</h5>
+              <ul class="courses-link-list">
+                <li><a href="index.html"><i class="fas fa-long-arrow-alt-right"></i>Home</a></li>
+                <li><a href="dsa.html"><i class="fas fa-long-arrow-alt-right"></i>Algorithms</a></li>
+                <li><a href="exercise.html"><i class="fas fa-long-arrow-alt-right"></i>Exercises</a></li>
+                <li><a href="resources.html"><i class="fas fa-long-arrow-alt-right"></i>Resources</a></li>
+                <li><a href="about.html"><i class="fas fa-long-arrow-alt-right"></i>About Us</a></li>
+              </ul>
+            </div>
+          </div><!-- widget end -->
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 col-sm-6 text-sm-left text-center">
+            <span class="copy-right-text" style="text-align: center;">2024 DSA Playgrounds. All rights reserved.</span>
+          </div>
+        </div>
+      </div>
+    </div><!-- footer-bottom end -->
+        
+  </footer>
+
+
+
+
+  <!-- GSAP and ScrollTrigger JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
+  <script>
+    // GSAP Animations for Header Section
+    gsap.from(".display-4", {
+      duration: 1,
+      y: -50,
+      opacity: 0,
+      ease: "power2.out",
+      delay: 0.5
+    });
+
+    gsap.from(".lead", {
+      duration: 1.2,
+      y: -30,
+      opacity: 0,
+      ease: "power2.out",
+      delay: 1
+    });
+
+    // GSAP Animations for FAQ Section
+    gsap.from(".faq-section .accordion-item", {
+      duration: 0.6,
+      y: 50,
+      opacity: 0,
+      stagger: 0.2,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".faq-section",
+        start: "top center",
+        toggleActions: "play none none none"
+      }
+    });
+
+    // GSAP Animations for Interview Tips Section
+    gsap.from(".bg-white", {
+      duration: 1,
+      y: 50,
+      opacity: 0,
+      stagger: 0.3,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".bg-white",
+        start: "top bottom",
+        toggleActions: "play none none none"
+      }
+    });
+
+    // GSAP Animations for Resource Cards
+    gsap.from(".resource-card", {
+      duration: 1,
+      y: 30,
+      opacity: 0,
+      stagger: 0.2,
+      ease: "power2.out",
+      scrollTrigger: {
+        trigger: ".resource-card",
+        start: "top 75%",
+        toggleActions: "play none none none"
+      }
+    });
+  </script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://unpkg.com/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+  <script src="https://unpkg.com/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Set Explanation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f0ffe7;
+            font-size: 14px;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+        .window {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .window-bar {
+            background-color: #e0e0e0;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .window-button {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+        .close { background-color: #ff5f56; }
+        .minimize { background-color: #ffbd2e; }
+        .maximize { background-color: #27c93f; }
+        .code-container {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        pre, .output-content {
+            color: #d4d4d4;
+            padding: 10px;
+            margin: 0;
+            overflow-x: auto;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .code-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .code-container::-webkit-scrollbar-track {
+            background: #2e2e2e;
+        }
+        .code-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        .code-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        @media (min-width: 768px) {
+            body {
+                padding: 20px;
+                font-size: 16px;
+            }
+            .container {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            .card {
+                flex: 1 1 calc(50% - 15px);
+            }
+            .code-container {
+                max-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h2>How it works:</h2>
+            <ol>
+                <li>Go through the array, one value at a time.</li>
+                <li>For each value, compare the value with the next value.</li>
+                <li>If the value is higher than the next one, swap the values so that the highest value comes last.</li>
+                <li>Go through the array as many times as there are values in the array.</li>
+            </ol>
+        </div>
+        <div class="card">
+            <h2>Code Example</h2>
+            <div class="window">
+                <div class="window-bar">
+                    <div class="window-button close"></div>
+                    <div class="window-button minimize"></div>
+                    <div class="window-button maximize"></div>
+                </div>
+                <div class="code-container">
+                    <pre><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+// Insertion sort function to sort individual buckets
+void insertionSort(vector&lt;float&gt;&amp; bucket) {
+    for (int i = 1; i &lt; bucket.size(); ++i) {
+        float key = bucket[i];
+        int j = i - 1;
+        while (j >= 0 &amp;&amp; bucket[j] &gt; key) {
+            bucket[j + 1] = bucket[j];
+            j--;
+        }
+        bucket[j + 1] = key;
+    }
+}
+
+// Function to sort arr[] of size n using bucket sort
+void bucketSort(float arr[], int n) {
+    // 1) Create n empty buckets
+    vector&lt;float&gt; b[n];
+
+    // 2) Put array elements in different buckets
+    for (int i = 0; i &lt; n; i++) {
+        int bi = n * arr[i];
+        b[bi].push_back(arr[i]);
+    }
+
+    // 3) Sort individual buckets using insertion sort-->
+    for (int i = 0; i &lt; n; i++) {
+        insertionSort(b[i]);
+    }
+
+    // 4) Concatenate all buckets into arr[]
+    int index = 0;
+    for (int i = 0; i &lt; n; i++) {
+        for (int j = 0; j &lt; b[i].size(); j++) {
+            arr[index++] = b[i][j];
+        }
+    }
+}
+
+// Driver program to test above function
+int main() {
+    float arr[] = {0.897, 0.565, 0.656, 0.1234, 0.665, 0.3434};
+    int n = sizeof(arr) / sizeof(arr[0]);
+    bucketSort(arr, n);
+
+    cout &lt;&lt; "Sorted array is \n";
+    for (int i = 0; i &lt; n; i++) {
+        cout &lt;&lt; arr[i] &lt;&lt; " ";
+    }
+    return 0;
+}
+</code></pre>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2>Output</h2>
+            <div class="window">
+                <div class="window-bar">
+                    <div class="window-button close"></div>
+                    <div class="window-button minimize"></div>
+                    <div class="window-button maximize"></div>
+                </div>
+                <div class="output-content">Sorted array is 
+0.1234 0.3434 0.565 0.656 0.665 0.897 </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

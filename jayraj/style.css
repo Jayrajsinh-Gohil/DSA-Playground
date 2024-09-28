@@ -1,0 +1,44 @@
+
+#bar-container {
+    display: flex;
+    align-items: flex-end;
+    height: 300px;
+    width: 100%;
+    border: 1px solid #ccc;
+    margin-top: 20px;
+}
+
+.bar {
+    width: 30px;
+    background-color: #007bff;
+    margin: 0 5px;
+    transition: all 0.3s ease;
+}
+
+.highlight {
+    background-color: #ff4757 !important;
+}
+
+.bar-container {
+    margin-top: 10px;
+}
+
+input[type="text"] {
+    width: 300px;
+    padding: 5px;
+}
+
+button {
+    padding: 5px 10px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+#explanation {
+    margin-top: 20px;
+}
+
+#status {
+    margin-top: 10px;
+    color: green;
+}
